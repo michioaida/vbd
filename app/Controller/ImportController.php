@@ -1,11 +1,14 @@
 <?php
 App::uses('AppController', 'Controller');
+App::uses('ConnectionManager', 'Model');
+
 
 /**
  * Import Controller
  *
  */
 class ImportController extends AppController {
+
 
 /**
  * index method
@@ -16,18 +19,280 @@ class ImportController extends AppController {
 	}
 
 
-	// this is the old import function that Michio wrote
-	public function importold() {
-		App::uses('ConnectionManager', 'Model');
-		$dataSource = ConnectionManager::getDataSource('default');
-		
+	// this function will import a specific file in a specific location for Madison County
+	public function import_madison() {
+		$dataSource = ConnectionManager::getDataSource('default');	
 		$dbhost = $dataSource->config['host'];
 		$dbuser = $dataSource->config['login']; 
 		$dbpass = "";
 		$dbname = $dataSource->config['database'];
+		$databaseTXT = 'C:\\Users\\Chad\\Desktop\\VoterDBImport\\VOTER DATABASES\\MADISON-COUNTY-2013.TXT';
 
-		$databaseTXT = 'C:\\Users\\Chad\\Desktop\\VoterDBImport\\VOTER DATABASES\\ORANGE-COUNTY-2012.txt';
+		// create database connection		
+		mysql_connect($dbhost, $dbuser, $dbpass) or die("MySQL Error: " . mysql_error());
+		mysql_select_db($dbname) or die("MySQL Error: " . mysql_error());
+
+		$fp = fopen($databaseTXT,'r') or die ("can't open file");
+		//var_dump($fp);		
 		
+		while ($s = fgets($fp,1024)) {
+		    //VOTER COLUMNS
+		    $voterId = trim(substr($s,0,15));  
+		    $firstName = trim(substr($s,15,15));  
+		    $middleName = trim(substr($s,30,15)); 
+		    $lastName = trim(substr($s,45,20));
+		    $suffix = trim(substr($s,65,8));
+		    //var_dump($voterId);
+		    //var_dump($firstName);
+		    //var_dump($middleName);
+		    //var_dump($lastName);
+		    //var_dump($suffix);
+
+		    //ADDRESS INFORMATION
+		    $addressLineOne = trim(substr($s,73,9)) . ' ' . trim(substr($s,82,30));
+		    $apartment = trim(substr($s,115,10));
+		    $apartmentNumber = trim(substr($s,125,10));
+		    $addressLineTwo = trim(substr($s,135,35));
+		    $addressLineThree = trim(substr($s,170,34));
+		    $city = trim(substr($s,204,25));
+		    $state = trim(substr($s,229,2));
+		    $zipcode = trim(substr($s,231,5));
+		    $zipcodePlus4 = trim(substr($s,236,4));
+		    $dateandtimeFileCreated = trim(substr($s,240,15));
+		   	$dateofBirth = trim(substr($s,255,8));
+		   	$sex = trim(substr($s,263,1));
+		    $eyeColor = trim(substr($s,264,3));
+		    $height = trim(substr($s,267,1)) . '-' . trim(substr($s,268,2));
+		    $telephoneNumber = trim(substr($s,270,11));
+		    $registrationDate = trim(substr($s,281,8));
+		    $registrationSource = trim(substr($s,289,30));
+		 	//var_dump($addressLineOne);
+		    //var_dump($apartment);
+		    //var_dump($apartmentNumber);
+		    //var_dump($addressLineTwo);
+		   	//var_dump($addressLineThree);
+		    //var_dump($city);
+		    //var_dump($state);
+		    //var_dump($zipcode);
+		    //var_dump($zipcodePlus4);
+		    //var_dump($dateandtimeFileCreated);
+		   	//var_dump($dateofBirth);
+		   	//var_dump($sex);
+		    //var_dump($eyeColor);
+		    //var_dump($height);
+		    //var_dump($telephoneNumber);
+		    //var_dump($registrationDate);
+		    //var_dump($registrationSource);
+			
+			//AFFILIATION
+			$affliation = trim(substr($s,319,3));
+		    $town = trim(substr($s,322,3));
+		    $ward = trim(substr($s,325,3));
+		    $district = trim(substr($s,328,3));
+		    $congressionalDistrict = trim(substr($s,331,3));
+		    $senatorialDistrict = trim(substr($s,334,3));
+		    $legislativeDistrict = trim(substr($s,337,3));
+		    $schoolDistrict = trim(substr($s,340,3));
+		   	$commonCouncilDistrict = trim(substr($s,343,3));
+		    $countyLegislativeDistrict = trim(substr($s,346,3));
+		    $villageCode = trim(substr($s,349,3));
+		    $wardCSO = trim(substr($s,352,3));
+		    $voterStatus = trim(substr($s,355,1));
+		    $reason = trim(substr($s,356,10));
+			//var_dump($affliation);
+			//var_dump($town);
+			//var_dump($ward);
+			//var_dump($district);
+			//var_dump($congressionalDistrict);
+			//var_dump($senatorialDistrict);
+			//var_dump($legislativeDistrict);
+			//var_dump($schoolDistrict);
+			//var_dump($commonCouncilDistrict);
+			//var_dump($countyLegislativeDistrict);
+			//var_dump($villageCode);
+			//var_dump($wardCSO);
+			//var_dump($voterStatus);
+			//var_dump($reason);
+
+		    // absentee
+			$absentee = trim(substr($s,366,1));
+		    //var_dump($absentee);
+
+			// mailing adress
+		    $mailingLine1 = trim(substr($s,367,80));
+			$mailingLine2 = trim(substr($s,447,40));
+			$mailingLine3 = trim(substr($s,487,40));
+			$mailingCity = trim(substr($s,527,25));
+			$mailingState = trim(substr($s,552,2));
+			$mailingZip = trim(substr($s,554,5));
+			$mailingZipPlus4 = trim(substr($s,559,4));
+			//if ($mailingLine1 != '') {
+			//	var_dump($mailingLine1);
+			//	var_dump($mailingLine2);
+			//	var_dump($mailingLine3);
+			//	var_dump($mailingCity);
+			//	var_dump($mailingState);
+			//	var_dump($mailingZip);
+			//	var_dump($mailingZipPlus4);
+			//	die();
+			//}
+
+			//absentee address
+			$absElectionCode = trim(substr($s,563,4));
+		    $absCode = trim(substr($s,567,3));
+		    $absApplicationDate = trim(substr($s,570,8));
+		    $absAddress1 = trim(substr($s,578,40)) . ' ' . trim(substr($s,618,40));
+		    $absAddress2 = trim(substr($s,658,40));
+		    $absAddress3 = trim(substr($s,698,40));
+		    $absCity = trim(substr($s,738,25));
+		    $absState = trim(substr($s,763,2));
+		    $absZip = trim(substr($s,765,5));
+		    $absZipPlus4 = trim(substr($s,770,4));		    
+		    $absBallotIssued = trim(substr($s,774,8));
+		    $absBallotReceived = trim(substr($s,782,8));
+		    $absBallotReissued = trim(substr($s,790,8));
+		    $absBallotRereceived = trim(substr($s,798,8));
+		    $absExpirationDate = trim(substr($s,806,8));
+		    $absEligible = trim(substr($s,814,1));
+		    //if ($absAddress1 != '') {
+			//	var_dump($absElectionCode);
+			//    var_dump($absCode);
+			//    var_dump($absApplicationDate);
+			//    var_dump($absAddress1);
+			//    var_dump($absAddress2);
+			//    var_dump($absAddress3);
+			//    var_dump($absCity);
+			//    var_dump($absState);
+			//    var_dump($absZip);
+			//    var_dump($absZipPlus4);		    
+			//    var_dump($absBallotIssued);
+			//    var_dump($absBallotReceived);
+			//    var_dump($absBallotReissued);
+			//    var_dump($absBallotRereceived);
+			//    var_dump($absExpirationDate);
+			//    var_dump($absEligible);
+			//	  die();
+			//}
+
+		    // mising election history! (at end of text file line)
+
+   		    //remove special characters for SQL insert
+		    $firstName = mysql_real_escape_string($firstName);
+		    $middleName = mysql_real_escape_string($middleName);
+		    $lastName = mysql_real_escape_string($lastName);
+		    $apartmentNumber = mysql_real_escape_string($apartmentNumber);
+		    $addressLineOne = mysql_real_escape_string($addressLineOne);
+		    $addressLineTwo = mysql_real_escape_string($addressLineTwo);
+		    $addressLineThree = mysql_real_escape_string($addressLineThree);
+		    $mailingLine1 = mysql_real_escape_string($mailingLine1);
+		    $mailingLine2 = mysql_real_escape_string($mailingLine2);
+		    $mailingLine3 = mysql_real_escape_string($mailingLine3);
+		    $absAddress1 = mysql_real_escape_string($absAddress1);
+		    $absAddress2 = mysql_real_escape_string($absAddress2);
+		    $absAddress3 = mysql_real_escape_string($absAddress3);
+
+			$sql = "INSERT INTO voter (Source, SourceID, FirstName, LastName, MiddleName, Suffix, DOB, Gender, EyeColor, Created, Height, Phone" .
+				") VALUES ('Madison County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$dateandtimeFileCreated','$height','$telephoneNumber')";
+			//var_dump($sql);
+			//die();
+
+			if (!mysql_query($sql)) {
+				die('Invalid query: ' . mysql_error());
+    		} else {
+        		// get primary key of record
+        		$voterPrimaryKey = mysql_insert_id();
+				//var_dump($voterPrimaryKey);
+				//die();    			
+
+        		// do we have residential address?
+        		if ($addressLineOne !== NULL && trim($addressLineOne) !== '') {
+        			$sql = "INSERT INTO address (Address1, Address2, Address3, Apartment, City, State, Zip) " .
+        				"VALUES ('$addressLineOne','$addressLineTwo','$addressLineThree','$apartmentNumber','$city','$state','$zipcode');";
+        			//var_dump($sql);
+        			if (!mysql_query($sql)) {
+						die('Invalid query: ' . mysql_error());
+    				} else {
+        				// get primary key of record
+        				$residentialAddressPrimaryKey = mysql_insert_id();
+        				//var_dump($residentialAddressPrimaryKey);
+        				$sql = "UPDATE voter SET AddressResidentialID=" . $residentialAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+        				//var_dump($sql);
+        				if (!mysql_query($sql)) {
+							die('Invalid query: ' . mysql_error());
+    					}
+        			}
+    			}
+
+    			// do we have mailing address?
+    			if($mailingAddress !== NULL && trim($mailingAddress) !== '') {
+    				$sql = "INSERT INTO address (Address1, Address2, Address3, Apartment, City, State, Zip) " .
+        				"VALUES ('$mailingLine1','$mailingLine2','$mailingLine3','','$mailingCity','$mailingState','$mailingZip');";
+        			//var_dump($sql);
+        			if (!mysql_query($sql)) {
+						die('Invalid query: ' . mysql_error());
+    				} else {
+        				// get primary key of record
+        				$mailingAddressPrimaryKey = mysql_insert_id();
+        				$sql = "UPDATE voter SET AddressMailingID=" . $mailingAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+        				//var_dump($sql);
+        				if (!mysql_query($sql)) {
+							die('Invalid query: ' . mysql_error());
+    					}
+    				}
+    			}
+
+    			// do we have a absentee address?
+    			if($absentee == 'Y') {
+    				$sql = "INSERT INTO address (Address1, Address2, Address3, Apartment, City, State, Zip) " .
+        				"VALUES ('$absAddress1','$absAddress2','$absAddress3','','$absCity','$absState','$absZip');";
+        			//var_dump($sql);
+        			if (!mysql_query($sql)) {
+						die('Invalid query: ' . mysql_error());
+    				} else {
+        				// get primary key of record
+        				$absenteeAddressPrimaryKey = mysql_insert_id();
+        				$sql = "UPDATE voter SET AddressAbsenteeID=" . $absenteeAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+        				//var_dump($sql);
+        				if (!mysql_query($sql)) {
+							die('Invalid query: ' . mysql_error());
+    					}
+    				}
+    			}
+    			
+    			// insert affilication information
+    			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict, CommonCouncilDistrict, CountyLegislativeDistrict, VillageCode)" .
+    				"VALUES ('$affliation','Orange','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
+    			//var_dump($sql);
+    			if (!mysql_query($sql)) {
+					die('Invalid query: ' . mysql_error());
+				} else {
+    				// get primary key of record
+    				$affiliationID = mysql_insert_id();
+    				$sql = "UPDATE voter SET AffiliationID=" . $affiliationID . " WHERE VoterID=" . $voterPrimaryKey;
+    				//var_dump($sql);
+        			if (!mysql_query($sql)) {
+						die('Invalid query: ' . mysql_error());
+					}
+				}
+    		}
+    	}
+
+		fclose($fp) or die("can't close file");	
+		var_dump("SUCCESS!!!");
+		die();
+	}
+
+
+	// this function will import a specific file in a specific location for Orange County
+	public function import_orange() {
+		$dataSource = ConnectionManager::getDataSource('default');	
+		$dbhost = $dataSource->config['host'];
+		$dbuser = $dataSource->config['login']; 
+		$dbpass = "";
+		$dbname = $dataSource->config['database'];
+		$databaseTXT = 'C:\\Users\\Chad\\Desktop\\VoterDBImport\\VOTER DATABASES\\ORANGE-COUNTY-2012.txt';
+
+		// create database connection		
 		mysql_connect($dbhost, $dbuser, $dbpass) or die("MySQL Error: " . mysql_error());
 		mysql_select_db($dbname) or die("MySQL Error: " . mysql_error());
 
@@ -177,7 +442,7 @@ class ImportController extends AppController {
 		    //var_dump($voterArray);
 		    //die();
 		    
-		    //AFTER GETTING THE COLUMN DATA, EACH FIELD MUST BE ESCAPED OR TRIMMED FOR UNNECESSARY WHITE SPACE WITHIN THE DATA.
+		    //remove special characters for SQL insert
 		    $firstName = mysql_real_escape_string($firstName);
 		    $middleName = mysql_real_escape_string($middleName);
 		    $lastName = mysql_real_escape_string($lastName);
