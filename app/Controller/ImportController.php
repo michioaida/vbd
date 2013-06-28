@@ -119,13 +119,16 @@ class ImportController extends AppController {
 		    //var_dump($absentee);
 
 			// mailing adress
-		    $mailingLine1 = trim(substr($s,367,80));
-			$mailingLine2 = trim(substr($s,447,40));
-			$mailingLine3 = trim(substr($s,487,40));
-			$mailingCity = trim(substr($s,527,25));
-			$mailingState = trim(substr($s,552,2));
-			$mailingZip = trim(substr($s,554,5));
-			$mailingZipPlus4 = trim(substr($s,559,4));
+		    $mailingAddress = trim(substr($s,367,40));
+		    if($mailingAddress !== NULL) {
+				$mailingLine1 = trim(substr($s,367,80)) . ' ' . trim(substr($s,407,40));
+				$mailingLine2 = trim(substr($s,447,40));
+				$mailingLine3 = trim(substr($s,487,40));
+				$mailingCity = trim(substr($s,527,25));
+				$mailingState = trim(substr($s,552,2));
+				$mailingZip = trim(substr($s,554,5));
+				$mailingZipPlus4 = trim(substr($s,559,4));
+			}
 			//if ($mailingLine1 != '') {
 			//	var_dump($mailingLine1);
 			//	var_dump($mailingLine2);
