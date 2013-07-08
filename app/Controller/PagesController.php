@@ -45,12 +45,28 @@ class PagesController extends AppController {
  */
 	public $uses = array();
 
-/**
- * Displays a view
- *
- * @param mixed What page to display
- * @return void
- */
+
+	// use beforeFilter to add authentication exceptions
+	public function beforeFilter() {
+		parent::beforeFilter();
+        // tell the AuthComponent to not require a login for home page (display action) for this controller only
+        $this->Auth->allow('display');
+    }
+
+
+    // extended method from AppController where we can set administrative privilidges
+    public function isAuthorized($user) {
+    	// allow anybody logged in to access any view
+    	return true;
+	}
+
+
+	/**
+	 * Displays a view
+	 *
+	 * @param mixed What page to display
+	 * @return void
+	 */
 	public function display() {
 		$path = func_get_args();
 
@@ -72,4 +88,6 @@ class PagesController extends AppController {
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
 	}
+
+
 }

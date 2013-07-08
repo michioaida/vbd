@@ -39,6 +39,22 @@
 	<div id="container">
 		<div id="header">
 			<h1>Voter Database</h1>
+			<?php
+				if($this->Session->read('Auth')) {
+				   	// user is logged in, show logout..user menu etc
+				   	?>
+				   	<div class="light">
+				   	<?php
+				   	echo "Hello " . $this->Session->read('Auth.User')['username'] . "&nbsp;&nbsp;&nbsp;";
+				   	echo $this->Html->link(__('Logout'), array('controller'=>'users', 'action'=>'logout'), array('class' => 'light')); 
+				   	?>
+				   	</div>
+				   	<?php
+				} else {
+				   	// the user is not logged in
+				   	echo $this->Html->link(__('Login'), array('controller'=>'users', 'action'=>'login'), array('class' => 'light')); 
+				}
+			?>
 		</div>
 		<div id="content">
 

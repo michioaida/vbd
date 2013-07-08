@@ -33,28 +33,38 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
-	/*
-	public function save_voter_address($voterID, $addressType) {
-		//var_dump($voterID . ' ' . $addressType);
-		//die();
-		
-		//var_dump($this->{$this->modelClass});
-		//die();
-		var_dump(ClassRegistry::init("Voter")->find($voterID));
-		die();
+	// addition of authentication to component array to redirect upon login/logout
+	public $components = array(
+        'Session',
+        'Auth' => array(
+            'loginRedirect' => array('controller' => 'voters', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home'),
+            'authorize' => array('Controller')  // this line is called ControllerAuthorize which allows you to handle authorization checks in a controller callback (used in conjunction with isAuthorized($user))
+        )
+    );
 
-		if (!$this->{$this->Voter}->exists($id)) {
-			var_dump("not found");
-			die();
-			throw new NotFoundException(__('Invalid voter'));
-		}
 
-		$options = array('conditions' => array('Voter.' . $this->{$this->Voter}->primaryKey => $id));
-		//$this->set('voter', $this->Voter->find('first', $options));
-		$voterUpdate = $this->{$this->Voter}->find('first', $options);
-		var_dump($voterUpdate);
-		die();
+	// use beforeFilter to add authentication exceptions
+	public function beforeFilter() {
+        // tell the AuthComponent to not require a login for all index and view actions, in every controller 
+        // this works in every controller because we defined this in AppController, if you want to authenticate individual controllers put this code in those specific controllers
+        //$this->Auth->allow('index', 'view');
+    }
 
-	}
-	*/
+
+    // use this function to see if a user is an administrator
+    public function isAuthorized($user) {
+        // Admin can access every action
+        if (isset($user['role']) && $user['role'] === 'admin') {
+            //var_dump("We are authorized!");
+            //die();
+            return true;
+        }
+
+        // Default deny
+        //var_dump("We are NOT authorized");
+        //die();
+        return false;
+    }
+
 }

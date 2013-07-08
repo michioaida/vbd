@@ -97,6 +97,10 @@ p {
 	background: #003d4c;
 	text-decoration: underline;
 }
+#header .light {
+	color: #fff;
+	float: right;
+}
 #content{
 	background: #fff;
 	clear: both;

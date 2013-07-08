@@ -7,6 +7,14 @@ App::uses('AppController', 'Controller');
  */
 class VotersController extends AppController {
 
+
+    // extended method from AppController where we can set administrative privilidges
+    public function isAuthorized($user) {
+    	// allow anybody logged in to access any view
+    	return true;
+	}
+
+
 /**
  * index method
  *

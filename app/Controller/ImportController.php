@@ -10,11 +10,22 @@ App::uses('ConnectionManager', 'Model');
 class ImportController extends AppController {
 
 
-/**
- * index method
- *
- * @return void
- */
+    // extended method from AppController where we can set administrative privilidges
+    public function isAuthorized($user) {
+	    // allow only admins to edit anything within this controller
+	    if (isset($user['role']) && $user['role'] === 'admin') {
+            return true;
+        }
+	    // default, return parent isAuthorized
+	    return parent::isAuthorized($user);
+	}
+
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
 	public function index() {
 	}
 
@@ -264,7 +275,7 @@ class ImportController extends AppController {
     			
     			// insert affilication information
     			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict, CommonCouncilDistrict, CountyLegislativeDistrict, VillageCode)" .
-    				"VALUES ('$affliation','Orange','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
+    				"VALUES ('$affliation','Madison','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
     			//var_dump($sql);
     			if (!mysql_query($sql)) {
 					die('Invalid query: ' . mysql_error());
