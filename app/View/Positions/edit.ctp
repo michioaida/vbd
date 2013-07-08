@@ -1,7 +1,7 @@
 <div class="positions form">
 <?php echo $this->Form->create('Position'); ?>
 	<fieldset>
-		<legend><?php echo __('Edit Position'); ?></legend>
+		<legend><?php echo __('Edit Position for ' . $voter['Voter']['FirstName'] . ' ' . $voter['Voter']['LastName']); ?></legend>
 	<?php
 		echo $this->Form->input('PositionID');
 		echo $this->Form->input('Energy');
@@ -21,9 +21,10 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
-		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Position.PositionID')), null, __('Are you sure you want to delete # %s?', $this->Form->value('Position.PositionID'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Positions'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Voters'), array('controller' => 'voters', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>
+		<!--<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Position.PositionID')), null, __('Are you sure you want to delete # %s?', $this->Form->value('Position.PositionID'))); ?></li>-->
+		<!--<li><?php echo $this->Html->link(__('List Positions'), array('action' => 'index')); ?></li>-->
+		<!--<li><?php echo $this->Html->link(__('List Voters'), array('controller' => 'voters', 'action' => 'index')); ?> </li>-->
+		<!--<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>-->
+		<li><?php echo $this->Html->link(__('Back to Voter'), array('controller' => 'voters', 'action' => 'view', $voter['Voter']['VoterID'])); ?> </li>
 	</ul>
 </div>

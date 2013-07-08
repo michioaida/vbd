@@ -106,4 +106,22 @@ class Voter extends AppModel {
 		$this->save($voter2update);
 	}
 
+
+	/// ******************************************************************************
+	/// this function will create the relationship between the voter and their positions by updating the foreign key in the voters table
+	public function save_voter_position($voterID, $positionID) {
+		//var_dump($voterID . ' ' . $positionID);
+		//die();
+
+		if (!$this->exists($voterID)) {
+			throw new NotFoundException(__('Invalid voter'));
+		}
+		
+		$options = array('conditions' => array('Voter.' . $this->primaryKey => $voterID));
+		$voter2update = $this->find('first', $options);
+		$voter2update['Voter']['PositionID'] = $positionID;
+		$this->save($voter2update);
+	}
+
+
 }

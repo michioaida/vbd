@@ -39,8 +39,8 @@
 		<!--<td><?php echo h($voter['Voter']['AddressAbsenteeID']); ?>&nbsp;</td>-->
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $voter['Voter']['VoterID'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $voter['Voter']['VoterID']), null, __('Are you sure you want to delete # %s?', $voter['Voter']['VoterID'])); ?>
+			<!--<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?>-->
+			<!--<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $voter['Voter']['VoterID']), null, __('Are you sure you want to delete # %s?', $voter['Voter']['VoterID'])); ?>-->
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -62,7 +62,7 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Voter'), array('action' => 'add')); ?></li>
+		<!--<li><?php echo $this->Html->link(__('New Voter'), array('action' => 'add')); ?></li>-->
 		<!--<li><?php echo $this->Html->link(__('List Addresses'), array('controller' => 'addresses', 'action' => 'index')); ?> </li>-->
 		<li><?php echo $this->Html->link(__('Search Voters'), array('action' => 'search')); ?></li>
 	</ul>

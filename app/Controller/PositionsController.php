@@ -46,16 +46,31 @@ class PositionsController extends AppController {
 	 * @return void
 	 */
 	public function add() {
+		// get voter object from querystring
+		$voterID = $this->request->query['id'];
+			
 		if ($this->request->is('post')) {
+			// create the new position object and add to database
 			$this->Position->create();
 			if ($this->Position->save($this->request->data)) {
+
+				// save the relationship between new postion record and the voter
+				ClassRegistry::init("Voter")->save_voter_position($voterID, $this->Position->id);
+
 				$this->Session->setFlash(__('The position has been saved'));
-				$this->redirect(array('action' => 'index'));
+
+				// redirect back to voter view
+				$this->redirect(array('controller'=>'Voters', 'action'=>'view', $voterID));
 			} else {
 				$this->Session->setFlash(__('The position could not be saved. Please, try again.'));
 			}
+		} else {
+			// get and display voter information
+			Controller::loadModel('Voter');
+			$this->set('voter', $this->Voter->find('first', array('conditions' => array('Voter.VoterID' => $voterID))));
 		}
 	}
+
 
 	/**
 	 * edit method
@@ -65,17 +80,28 @@ class PositionsController extends AppController {
 	 * @return void
 	 */
 	public function edit($id = null) {
+		// get voter object from querystring
+		$voterID = $this->request->query['id'];
+
 		if (!$this->Position->exists($id)) {
 			throw new NotFoundException(__('Invalid position'));
 		}
+
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Position->save($this->request->data)) {
 				$this->Session->setFlash(__('The position has been saved'));
-				$this->redirect(array('action' => 'index'));
+				
+				// redirect back to voter view
+				$this->redirect(array('controller'=>'Voters', 'action'=>'view', $voterID));
+
 			} else {
 				$this->Session->setFlash(__('The position could not be saved. Please, try again.'));
 			}
 		} else {
+			// get and display voter information
+			Controller::loadModel('Voter');
+			$this->set('voter', $this->Voter->find('first', array('conditions' => array('Voter.VoterID' => $voterID))));
+
 			$options = array('conditions' => array('Position.' . $this->Position->primaryKey => $id));
 			$this->request->data = $this->Position->find('first', $options);
 		}
