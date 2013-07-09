@@ -183,22 +183,46 @@ class VotersController extends AppController {
 	public function search() {
 
         if ($this->request->is('post')) {
-        	//var_dump($this->data['Voter']['q']);
-        	//$this->set('Voters', $this->Voter->search($this->data['Voter']['q']));
+        	//var_dump($this->data['Voter']);
+        	//die();
+        	
+        	// build conditions for database query
+        	$conditions = array();
+        	if (!empty($this->data['Voter']['lastname'])) {
+        		$conditions['Voter.LastName'] = $this->data['Voter']['lastname'];
+        	}
+        	if (!empty($this->data['Voter']['address'])) {
+        		$conditions['ResidentialAddress.Address1'] = $this->data['Voter']['address'];
+        	}
+        	if (!empty($this->data['Voter']['city'])) {
+        		$conditions['ResidentialAddress.City'] = $this->data['Voter']['city'];
+        	}
+        	if (!empty($this->data['Voter']['zip'])) {
+        		$conditions['ResidentialAddress.Zip'] = $this->data['Voter']['zip'];
+        	}
+        	if (!empty($this->data['Voter']['party'])) {
+        		$conditions['Affiliation.Party'] = $this->data['Voter']['party'];
+        	}
+        	//var_dump($conditions);
 
+        	// set options for Find All 
         	$options = array(
-			    'conditions' => array('Voter.LastName' => $this->data['Voter']['q']), //array of conditions
-			    //'conditions' => array('Voter.LastName' => 'Voter.LastName = ? OR Voter.FirstName = ?' => array($this->data['Voter']['q'], $this->data['Voter']['q'])),
+			    'conditions' => $conditions, //array of conditions
 			    'recursive' => 0, //int
 			    //'fields' => array('Model.field1', 'DISTINCT Model.field2'), //array of field names
-			    'order' => array('Voter.LastName') //, //string or array defining order
+			    'order' => array('Voter.LastName','Voter.FirstName','ResidentialAddress.City') //, //string or array defining order
 			    //'group' => array('Model.field'), //fields to GROUP BY
 			    //'limit' => n, //int
 			    //'page' => n, //int
 			    //'offset' => n, //int
 			    //'callbacks' => true //other possible values are false, 'before', 'after'
 			);
-        	$this->set('voters', $this->Voter->find('all', $options));
+
+        	$resultset = $this->Voter->find('all', $options);
+        	//var_dump($resultset);
+        	//die();
+
+        	$this->set('voters', $resultset);
 		}
     } 
 

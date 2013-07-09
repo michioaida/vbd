@@ -2,27 +2,44 @@
 	<h2><?php echo __('Search Voters'); ?></h2>
 	<?php 
 		echo $this->Form->create("Voter", array('action' => 'search'));
-	    echo $this->Form->input("q", array('label' => 'Search for Last Name'));
+	    echo $this->Form->input("lastname", array('label' => 'Last Name'));
+	    $party_array = array('0'=>' ** Choose Party ** ','BLK'=>'Blank','CON'=>'Conservative','DEM'=>'Democratic','GRE'=>'Green','IND'=>'Independence','LBN'=>'Libertarian','LIB'=>'Liberal','REP'=>'Republican','RTL'=>'Right to Life','WOR'=>'Working Family','OTH'=>'Other');
+	    echo $this->Form->input('party', array('label'=>'Party', 'type'=>'select', 'options'=>$party_array));
+	    echo $this->Form->input("address", array('label' => 'Residential Street')); 
+	    echo $this->Form->input("city", array('label' => 'Residential City'));
+	    echo $this->Form->input("zip", array('label' => 'Residential Zipcode'));    
 	    echo $this->Form->end(__('Search'));
 	?> 
 	<br>
-	<br>
 	<table>
-	<?php // if we have a voter list, display it
-	if (isset($voters)){
-		foreach ($voters as $voter): ?>
 		<tr>
-			<td><?php echo __('First Name:'); ?></td>
-			<td><?php echo h($voter['Voter']['FirstName']); ?>&nbsp;</td>
-			<td><?php echo __('Last Name:'); ?></td>
-			<td><?php echo h($voter['Voter']['LastName']); ?>&nbsp;</td>
-			<td class="actions">
-				<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?>
-				<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $voter['Voter']['VoterID']), null, __('Are you sure you want to delete # %s?', $voter['Voter']['VoterID'])); ?>
-			</td>
+			<th><?php echo __('Name'); ?></th>
+			<th>Address</th>
+			<th>Party</th>
+			<!--<th>&nbsp;</th>-->
 		</tr>
-		<?php endforeach; 
-	} ?>
+		<?php // if we have a voter list, display it
+		if (isset($voters)){
+
+			echo "<b>Result Count:</b> " . count($voters); 
+	
+			foreach ($voters as $voter): ?>
+			<tr>
+				<td><?php echo h($voter['Voter']['FirstName']) . ' ' . h($voter['Voter']['LastName']); ?>&nbsp;</td>
+				<td><?php echo 
+							h($voter['ResidentialAddress']['Address1']) . ' ' . 
+							h($voter['ResidentialAddress']['City']) . ' ' . 
+							h($voter['ResidentialAddress']['Zip']); ?>&nbsp;
+				</td>
+				<td><?php echo h($voter['Affiliation']['Party']); ?>&nbsp;</td>
+				<!--
+				<td class="actions">
+					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?>
+				</td>
+				-->
+			</tr>
+			<?php endforeach; 
+		} ?>
 	</table>
 </div>
 <div class="actions">
