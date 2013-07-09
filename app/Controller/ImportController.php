@@ -32,6 +32,9 @@ class ImportController extends AppController {
 
 	// this function will import a specific file in a specific location for Madison County
 	public function import_madison() {
+		//var_dump("Madison County Import");
+		//die();
+
 		$dataSource = ConnectionManager::getDataSource('default');	
 		$dbhost = $dataSource->config['host'];
 		$dbuser = $dataSource->config['login']; 
@@ -168,6 +171,7 @@ class ImportController extends AppController {
 		    $absBallotRereceived = trim(substr($s,798,8));
 		    $absExpirationDate = trim(substr($s,806,8));
 		    $absEligible = trim(substr($s,814,1));
+		    $specialNote = substr($s,815,40);
 		    //if ($absAddress1 != '') {
 			//	var_dump($absElectionCode);
 			//    var_dump($absCode);
@@ -185,10 +189,19 @@ class ImportController extends AppController {
 			//    var_dump($absBallotRereceived);
 			//    var_dump($absExpirationDate);
 			//    var_dump($absEligible);
+			//    var_dump($specialNote);
 			//	  die();
 			//}
 
-		    // mising election history! (at end of text file line)
+   		    //VOTER HISTORY
+		    $voterHistory = trim(substr($s,855,100));		//actual length as of 7/2013 was 48 characters
+		    //var_dump($voterHistory);
+		    //die();
+		    if ($voterHistory !== '') {
+		    	$voterHistoryArray = str_split($voterHistory, 2);
+		    	//var_dump($voterHistoryArray);
+		    	//die();
+			}
 
    		    //remove special characters for SQL insert
 		    $firstName = mysql_real_escape_string($firstName);
@@ -288,6 +301,19 @@ class ImportController extends AppController {
 						die('Invalid query: ' . mysql_error());
 					}
 				}
+
+				// do we have a voter history?
+    			if($voterHistoryArray !== NULL && count($voterHistoryArray) !== 0) {
+    				for($i=0; $i<count($voterHistoryArray); $i+=2) { 
+    					//var_dump($i);
+    					$sql = "INSERT INTO election_history (VoterID, ElectionCode, Year) VALUES ('$voterPrimaryKey','" . $voterHistoryArray[$i] . "','" . $voterHistoryArray[$i + 1] . "'); ";
+	    				if (!mysql_query($sql)) {
+							die('Invalid query: ' . mysql_error());
+						}
+    				}
+    				//var_dump($sql);
+    				//die();
+    			}
     		}
     	}
 
