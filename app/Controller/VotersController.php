@@ -192,7 +192,7 @@ class VotersController extends AppController {
         		$conditions['Voter.LastName'] = $this->data['Voter']['lastname'];
         	}
         	if (!empty($this->data['Voter']['address'])) {
-        		$conditions['ResidentialAddress.Address1'] = $this->data['Voter']['address'];
+        		$conditions['ResidentialAddress.Address1 LIKE'] = '%' . $this->data['Voter']['address'] . '%';
         	}
         	if (!empty($this->data['Voter']['city'])) {
         		$conditions['ResidentialAddress.City'] = $this->data['Voter']['city'];
