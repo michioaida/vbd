@@ -16,7 +16,7 @@
 			<th><?php echo __('Name'); ?></th>
 			<th>Address</th>
 			<th>Party</th>
-			<!--<th>&nbsp;</th>-->
+			<th>&nbsp;</th>
 		</tr>
 		<?php // if we have a voter list, display it
 		if (isset($voters)){
@@ -32,11 +32,9 @@
 							h($voter['ResidentialAddress']['Zip']); ?>&nbsp;
 				</td>
 				<td><?php echo h($voter['Affiliation']['Party']); ?>&nbsp;</td>
-				<!--
 				<td class="actions">
-					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?>
+					<?php echo $this->Html->link(__('View'), array('action' => 'view', $voter['Voter']['VoterID'])); ?>
 				</td>
-				-->
 			</tr>
 			<?php endforeach; 
 		} ?>
