@@ -89,7 +89,8 @@ class VotersController extends AppController {
 		$options = array('conditions' => array('Voter.' . $this->Voter->primaryKey => $id));
 		
 		// set voter variable for use on form
-		$this->set('voter', $this->Voter->find('first', $options));
+		$resultset = $this->Voter->find('first', $options);
+		$this->set('voter', $resultset);
 	}
 
 /**
@@ -203,20 +204,38 @@ class VotersController extends AppController {
         	if (!empty($this->data['Voter']['party'])) {
         		$conditions['Affiliation.Party'] = $this->data['Voter']['party'];
         	}
+        	if (!empty($this->data['Voter']['election_year'])) {
+        		$ele_year = $this->data['Voter']['election_year'];
+        		if(strlen($ele_year > 2)) {
+        			$ele_year = substr($ele_year, -2);
+        		}
+        		$conditions['ElectionHistory.Year'] = $ele_year;
+        	}
+        	if (!empty($this->data['Voter']['election_code'])) {
+        		$conditions['ElectionHistory.ElectionCode'] = $this->data['Voter']['election_code'];
+        	}
         	//var_dump($conditions);
+        	//die();
 
         	// set options for Find All 
         	$options = array(
+        		
+        		'joins' => array(
+			        array('table'=>'election_history', 'alias' => 'ElectionHistory', 'type' => 'INNER', 'conditions' => array('Voter.VoterID = ElectionHistory.VoterID'))//,
+			        //array('table'=>'address', 'alias' => 'ResidentialAddress', 'type' => 'INNER', 'conditions' => array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
+			    ),
 			    'conditions' => $conditions, //array of conditions
 			    'recursive' => 0, //int
-			    //'fields' => array('Model.field1', 'DISTINCT Model.field2'), //array of field names
-			    'order' => array('Voter.LastName','Voter.FirstName','ResidentialAddress.City') //, //string or array defining order
+			    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.Zip', 'Affiliation.Party'), //array of field names
+			    'order' => array('Voter.LastName', 'Voter.FirstName', 'ResidentialAddress.City') //, //string or array defining order
 			    //'group' => array('Model.field'), //fields to GROUP BY
 			    //'limit' => n, //int
 			    //'page' => n, //int
 			    //'offset' => n, //int
 			    //'callbacks' => true //other possible values are false, 'before', 'after'
 			);
+			//var_dump($options);
+			//die();
 
         	$resultset = $this->Voter->find('all', $options);
         	//var_dump($resultset);

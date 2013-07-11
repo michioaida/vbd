@@ -1,3 +1,7 @@
+<?php 
+//var_dump($voter);
+//die();
+?>
 <div class="voters view">
 <h2><?php  echo __('Voter'); ?></h2>
 	<dl>

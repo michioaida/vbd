@@ -29,12 +29,9 @@ class Voter extends AppModel {
 	public $displayField = 'LastName';
 
 
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
- * belongsTo associations
- *
- * @var array
+ * Model Relationships 
  */
 	public $belongsTo = array(
 		'ResidentialAddress' => array(
@@ -68,6 +65,16 @@ class Voter extends AppModel {
 			'fields' => '',
 			'order' => '')
 	);
+
+
+	// Voter HasMany ElectionHistory
+	public $hasMany = array( 
+		'ElectionHistory' => array( 
+			'className' => 'ElectionHistory',
+			'foreignKey' => 'VoterID')
+	);
+	
+
 
 /*
 	Helper Methods
