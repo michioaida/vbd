@@ -40,7 +40,7 @@ class ImportController extends AppController {
 		$dbuser = $dataSource->config['login']; 
 		$dbpass = "";
 		$dbname = $dataSource->config['database'];
-		$databaseTXT = 'C:\\Users\\Chad\\Desktop\\VoterDBImport\\VOTER DATABASES\\MADISON-COUNTY-2013.TXT';
+		$databaseTXT = 'C:\\Users\\Chad\\Documents\\WebGigz\\VoterDB\\MADISON-COUNTY-5-23-13.TXT';
 
 		// create database connection		
 		mysql_connect($dbhost, $dbuser, $dbpass) or die("MySQL Error: " . mysql_error());
@@ -306,7 +306,7 @@ class ImportController extends AppController {
     			if($voterHistoryArray !== NULL && count($voterHistoryArray) !== 0) {
     				for($i=0; $i<count($voterHistoryArray); $i+=2) { 
     					//var_dump($i);
-    					$sql = "INSERT INTO election_history (VoterID, ElectionCode, Year) VALUES ('$voterPrimaryKey','" . $voterHistoryArray[$i] . "','" . $voterHistoryArray[$i + 1] . "'); ";
+    					$sql = "INSERT INTO election_history (VoterID, ElectionCode, ElectionYear, CodeYear) VALUES ('$voterPrimaryKey','" . $voterHistoryArray[$i] . "','" . $voterHistoryArray[$i + 1] . "','" . $voterHistoryArray[$i] . $voterHistoryArray[$i + 1] . "'); ";
 	    				if (!mysql_query($sql)) {
 							die('Invalid query: ' . mysql_error());
 						}

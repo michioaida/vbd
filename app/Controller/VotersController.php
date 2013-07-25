@@ -189,8 +189,14 @@ class VotersController extends AppController {
         	
         	// build conditions for database query
         	$conditions = array();
-        	if (!empty($this->data['Voter']['lastname'])) {
-        		$conditions['Voter.LastName'] = $this->data['Voter']['lastname'];
+        	if (!empty($this->data['Voter']['name'])) {
+				$conditions = array('OR' => array(
+				    array('Voter.FirstName LIKE' => '%' . $this->data['Voter']['name'] . '%'),
+				    array('Voter.LastName LIKE' => '%' . $this->data['Voter']['name'] . '%')
+				));
+        	}
+        	if(!empty($this->data['Voter']['gender'])) {
+        		$conditions['Voter.Gender'] = $this->data['Voter']['gender'];
         	}
         	if (!empty($this->data['Voter']['address'])) {
         		$conditions['ResidentialAddress.Address1 LIKE'] = '%' . $this->data['Voter']['address'] . '%';
@@ -204,16 +210,37 @@ class VotersController extends AppController {
         	if (!empty($this->data['Voter']['party'])) {
         		$conditions['Affiliation.Party'] = $this->data['Voter']['party'];
         	}
-        	if (!empty($this->data['Voter']['election_year'])) {
-        		$ele_year = $this->data['Voter']['election_year'];
-        		if(strlen($ele_year > 2)) {
-        			$ele_year = substr($ele_year, -2);
+        	//if (!empty($this->data['Voter']['election_year_start'])) {
+        	//	$ele_year_start = $this->data['Voter']['election_year_start'];
+        	//	if(strlen($ele_year_start > 2)) {
+        	//		$ele_year_start = substr($ele_year_start, -2);
+        	//	}
+        	//	if(!empty($this->data['Voter']['election_year_end'])) {
+        	//		$ele_year_end = $this->data['Voter']['election_year_end'];
+        	//		if(strlen($ele_year_end > 2)) {
+        	//			$ele_year_end = substr($ele_year_end, -2);
+        	//		} else { 
+        	//			$ele_year_end = substr(date("Y"), -2);
+        	//		}
+        	//	}
+        	//	$conditions['ElectionHistory.Year'] = $ele_year;
+        	//}
+        	//if (!empty($this->data['Voter']['election_code'])) {
+        	//	$conditions['ElectionHistory.ElectionCode'] = $this->data['Voter']['election_code'];
+        	//}
+
+        	//var_dump($this->data['Voter']['election_years']);
+        	if (!empty($this->data['Voter']['election_years'])) {
+        		//var_dump($this->data['Voter']['election_years']);
+        		//die();
+        		$election_year_array = array();
+        		foreach ($this->data['Voter']['election_years'] as $election_year) {
+        			//$conditions['ElectionHistory.CodeYear'] = $election_year);
+        			$election_year_array[] = $election_year;
         		}
-        		$conditions['ElectionHistory.Year'] = $ele_year;
+        		$conditions['ElectionHistory.CodeYear'] = $election_year_array;
         	}
-        	if (!empty($this->data['Voter']['election_code'])) {
-        		$conditions['ElectionHistory.ElectionCode'] = $this->data['Voter']['election_code'];
-        	}
+
         	//var_dump($conditions);
         	//die();
 
@@ -226,7 +253,7 @@ class VotersController extends AppController {
 			    ),
 			    'conditions' => $conditions, //array of conditions
 			    'recursive' => 0, //int
-			    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.Zip', 'Affiliation.Party'), //array of field names
+			    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.Zip', 'Affiliation.Party'), //array of field names
 			    'order' => array('Voter.LastName', 'Voter.FirstName', 'ResidentialAddress.City') //, //string or array defining order
 			    //'group' => array('Model.field'), //fields to GROUP BY
 			    //'limit' => n, //int
