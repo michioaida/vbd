@@ -241,6 +241,14 @@ class VotersController extends AppController {
         		$conditions['ElectionHistory.CodeYear'] = $election_year_array;
         	}
 
+        	if (!empty($this->data['Voter']['positions'])) {
+        		//var_dump($this->data['Voter']['positions']);
+        		foreach ($this->data['Voter']['positions'] as $position) {
+        			$conditions['Position.' . $position] = true;
+        		}
+        		
+        	}
+
         	//var_dump($conditions);
         	//die();
 

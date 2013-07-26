@@ -3,15 +3,9 @@
 	<fieldset>
 		<legend><?php echo __('Add Positions for ' . $voter['Voter']['FirstName'] . ' ' . $voter['Voter']['LastName']); ?></legend>
 	<?php
-		echo $this->Form->input('Energy');
-		echo $this->Form->input('SecondAmendment');
-		echo $this->Form->input('FiscalConservative');
-		echo $this->Form->input('Volunteer');
-		echo $this->Form->input('Hydrofracking');
-		echo $this->Form->input('KeystonePipeline');
-		echo $this->Form->input('ImmigrationReform');
-		echo $this->Form->input('ProChoice');
-		echo $this->Form->input('Donor');
+		// get all positions from database using Postion Helper Method
+	    $position_array = $this->Position->GetPositionArray();
+	    echo $this->Form->input('positions', array('type'=>'select', 'multiple'=>'checkbox', 'label'=>__('Positions'), 'options'=>$position_array));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

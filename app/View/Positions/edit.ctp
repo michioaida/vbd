@@ -3,16 +3,20 @@
 	<fieldset>
 		<legend><?php echo __('Edit Position for ' . $voter['Voter']['FirstName'] . ' ' . $voter['Voter']['LastName']); ?></legend>
 	<?php
-		echo $this->Form->input('PositionID');
-		echo $this->Form->input('Energy');
-		echo $this->Form->input('SecondAmendment');
-		echo $this->Form->input('FiscalConservative');
-		echo $this->Form->input('Volunteer');
-		echo $this->Form->input('Hydrofracking');
-		echo $this->Form->input('KeystonePipeline');
-		echo $this->Form->input('ImmigrationReform');
-		echo $this->Form->input('ProChoice');
-		echo $this->Form->input('Donor');
+		// get all positions from database using Postion Helper Method
+	    $position_array = $this->Position->GetPositionArray();
+	    //$position_array = $this->Position->GetPositionArrayByVoterID($voter['Voter']['PositionID']);
+	    //var_dump($position_array);
+	    //die();
+
+	    $selected = array();
+	    echo $this->Form->input('positions', 
+	    	array(	'type'=>'select', 
+	    			'multiple'=>'checkbox', 
+	    			'label'=>__('Positions'),
+	    			'options'=>$position_array,
+	    			'selected'=>$selected
+	    			));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit')); ?>

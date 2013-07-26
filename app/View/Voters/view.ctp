@@ -99,25 +99,16 @@
 	<h4><?php  echo __('Voter Postions'); ?></h4>
 	<?php if (strlen($voter['Voter']['PositionID']) == 0) {
 		echo "None - " . $this->Html->link(__('click here to add'), array('controller' => 'positions', 'action' => 'Add', '?' => array('id' => $voter['Voter']['VoterID'])));
-	} else { ?>
-	<dl>
-		<dt><?php echo __('Second Amendment'); ?></dt>
-		<dd><?php echo h(($voter['Position']['SecondAmendment']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Fiscal Conservative'); ?></dt>
-		<dd><?php echo h(($voter['Position']['FiscalConservative']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Volunteer'); ?></dt>
-		<dd><?php echo h(($voter['Position']['Volunteer']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Hydrofracking'); ?></dt>
-		<dd><?php echo h(($voter['Position']['Hydrofracking']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Keystone Pipeline'); ?></dt>
-		<dd><?php echo h(($voter['Position']['KeystonePipeline']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Immigration Reform'); ?></dt>
-		<dd><?php echo h(($voter['Position']['ImmigrationReform']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Pro Choice'); ?></dt>
-		<dd><?php echo h(($voter['Position']['ProChoice']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-		<dt><?php echo __('Donor'); ?></dt>
-		<dd><?php echo h(($voter['Position']['Donor']) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
-	</dl>
+	} else { 
+		// get all positions from database using Postion Helper Method
+		$position_array = $this->Position->GetPositionArray(); ?>
+		<dl>
+		<?php 
+		foreach ($position_array as $key => $value) { ?>
+			<dt><?php echo __($value); ?></dt>
+			<dd><?php echo h(($voter['Position'][$key]) == 1 ? 'true' : 'false') ?>&nbsp;</dd>
+		<?php } ?>
+		</dl>
 	<?php } ?>
 </div>
 <div class="actions">

@@ -15,8 +15,12 @@
 	    //$election_list = array('PP'=>'Presidential Primary', 'PE'=>'Primary Election', 'GE'=>'General Election', 'PF'=>'Primary Federal', 'SE'=>'Special Election');
 	    //echo $this->Form->input('election_code', array('type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election'), 'options'=>$election_list));
 	    
-	    echo $this->Form->input('election_years', array('type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election Years'), 'options'=> array( 'GE10'=>'GE10', 'GE11'=>'GE11', 'GE12'=>'GE12', 'PE10'=>'PE10', 'PE11'=>'PE11', 'PE12'=>'PE12')));
+	    echo $this->Form->input('election_years', array('type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election Years'), 'options'=> array('GE07'=>'GE07', 'GE08'=>'GE08', 'GE09'=>'GE09', 'GE10'=>'GE10', 'GE11'=>'GE11', 'GE12'=>'GE12', 'PE07'=>'PE07', 'PE08'=>'PE08', 'PE09'=>'PE09', 'PE10'=>'PE10', 'PE11'=>'PE11', 'PE12'=>'PE12')));
 
+	    // get issues from Position Helper so we can filter result set by them
+	    $position_array = $this->Position->GetPositionArray();
+	    echo $this->Form->input('positions', array('type'=>'select', 'multiple'=>'checkbox', 'label'=>__('Positions'), 'options'=>$position_array));
+	    
 	    echo $this->Form->end(__('Search'));
 	?> 
 	<br>
