@@ -21,7 +21,12 @@
 	    $position_array = $this->Position->GetPositionArray();
 	    echo $this->Form->input('positions', array('type'=>'select', 'multiple'=>'checkbox', 'label'=>__('Positions'), 'options'=>$position_array));
 	    
-	    echo $this->Form->end(__('Search'));
+	    //echo $this->Form->end(__('Search'));
+	    echo $this->Form->submit('Search', array('name'=>'submitbutton', 'value'=>'search')); 
+ 		echo $this->Form->submit('Export to CSV', array('name'=>'submitbutton', 'value'=>'export')); 
+ 		echo $this->Form->end(); 
+	    
+
 	?> 
 	<br>
 	<table>
@@ -36,7 +41,7 @@
 		if (isset($voters)){
 
 			echo "<b>Result Count:</b> " . count($voters); 
-	
+			
 			foreach ($voters as $voter): ?>
 			<tr>
 				<td><?php echo h($voter['Voter']['FirstName']) . ' ' . h($voter['Voter']['LastName']); ?>&nbsp;</td>

@@ -184,101 +184,148 @@ class VotersController extends AppController {
 	public function search() {
 
         if ($this->request->is('post')) {
-        	//var_dump($this->data['Voter']);
-        	//die();
         	
-        	// build conditions for database query
-        	$conditions = array();
-        	if (!empty($this->data['Voter']['name'])) {
-				$conditions = array('OR' => array(
-				    array('Voter.FirstName LIKE' => '%' . $this->data['Voter']['name'] . '%'),
-				    array('Voter.LastName LIKE' => '%' . $this->data['Voter']['name'] . '%')
-				));
+        	if(stristr($this->params['data']['submitbutton'], 'export')) {
+        		//$this->export($resultset);
+        		//$this->redirect(array('action'=>'export', $resultset));
+        		$this->setAction('export');
+        		//$this->requestAction(array('action'=>'export'), array('pass'=>$resultset), array('return'));
+        	} else {
+        		// query voters based on search criteria
+	        	$resultset = $this->query_voters($this->data['Voter']);
+        		$this->set('voters', $resultset);	
         	}
-        	if(!empty($this->data['Voter']['gender'])) {
-        		$conditions['Voter.Gender'] = $this->data['Voter']['gender'];
-        	}
-        	if (!empty($this->data['Voter']['address'])) {
-        		$conditions['ResidentialAddress.Address1 LIKE'] = '%' . $this->data['Voter']['address'] . '%';
-        	}
-        	if (!empty($this->data['Voter']['city'])) {
-        		$conditions['ResidentialAddress.City'] = $this->data['Voter']['city'];
-        	}
-        	if (!empty($this->data['Voter']['zip'])) {
-        		$conditions['ResidentialAddress.Zip'] = $this->data['Voter']['zip'];
-        	}
-        	if (!empty($this->data['Voter']['party'])) {
-        		$conditions['Affiliation.Party'] = $this->data['Voter']['party'];
-        	}
-        	//if (!empty($this->data['Voter']['election_year_start'])) {
-        	//	$ele_year_start = $this->data['Voter']['election_year_start'];
-        	//	if(strlen($ele_year_start > 2)) {
-        	//		$ele_year_start = substr($ele_year_start, -2);
-        	//	}
-        	//	if(!empty($this->data['Voter']['election_year_end'])) {
-        	//		$ele_year_end = $this->data['Voter']['election_year_end'];
-        	//		if(strlen($ele_year_end > 2)) {
-        	//			$ele_year_end = substr($ele_year_end, -2);
-        	//		} else { 
-        	//			$ele_year_end = substr(date("Y"), -2);
-        	//		}
-        	//	}
-        	//	$conditions['ElectionHistory.Year'] = $ele_year;
-        	//}
-        	//if (!empty($this->data['Voter']['election_code'])) {
-        	//	$conditions['ElectionHistory.ElectionCode'] = $this->data['Voter']['election_code'];
-        	//}
-
-        	//var_dump($this->data['Voter']['election_years']);
-        	if (!empty($this->data['Voter']['election_years'])) {
-        		//var_dump($this->data['Voter']['election_years']);
-        		//die();
-        		$election_year_array = array();
-        		foreach ($this->data['Voter']['election_years'] as $election_year) {
-        			//$conditions['ElectionHistory.CodeYear'] = $election_year);
-        			$election_year_array[] = $election_year;
-        		}
-        		$conditions['ElectionHistory.CodeYear'] = $election_year_array;
-        	}
-
-        	if (!empty($this->data['Voter']['positions'])) {
-        		//var_dump($this->data['Voter']['positions']);
-        		foreach ($this->data['Voter']['positions'] as $position) {
-        			$conditions['Position.' . $position] = true;
-        		}
-        		
-        	}
-
-        	//var_dump($conditions);
-        	//die();
-
-        	// set options for Find All 
-        	$options = array(
-        		
-        		'joins' => array(
-			        array('table'=>'election_history', 'alias' => 'ElectionHistory', 'type' => 'INNER', 'conditions' => array('Voter.VoterID = ElectionHistory.VoterID'))//,
-			        //array('table'=>'address', 'alias' => 'ResidentialAddress', 'type' => 'INNER', 'conditions' => array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
-			    ),
-			    'conditions' => $conditions, //array of conditions
-			    'recursive' => 0, //int
-			    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.Zip', 'Affiliation.Party'), //array of field names
-			    'order' => array('Voter.LastName', 'Voter.FirstName', 'ResidentialAddress.City') //, //string or array defining order
-			    //'group' => array('Model.field'), //fields to GROUP BY
-			    //'limit' => n, //int
-			    //'page' => n, //int
-			    //'offset' => n, //int
-			    //'callbacks' => true //other possible values are false, 'before', 'after'
-			);
-			//var_dump($options);
-			//die();
-
-        	$resultset = $this->Voter->find('all', $options);
-        	//var_dump($resultset);
-        	//die();
-
-        	$this->set('voters', $resultset);
 		}
     } 
+
+
+	public function export() {
+		// do not allow any HTML to return from this function
+		$this->autoRender = false;
+
+		//ini_set('max_execution_time', 600); //increase max_execution_time to 10 min if data set is very large
+
+		// query voters based on search criteria
+    	$resultset = $this->query_voters($this->data['Voter']);
+
+		//create a file
+		$filename = "voter_list_".date("Ymd").".csv";
+		$csv_file = fopen('php://output', 'w');
+
+		// create the header and specify CSV
+ 		header('Content-type: application/csv');
+		header('Content-Disposition: attachment; filename="'.$filename.'"');
+
+		// The column headings of your .csv file
+		$header_row = array("VoterID", "FirstName", "LastName", "Gender", "\r\n");
+		fputcsv($csv_file, $header_row);
+
+		// Each iteration of this while loop will be a row in your .csv file where each field corresponds to the heading of the column
+		foreach($resultset as $voter)
+		{
+			$row = array(
+				$voter['Voter']['VoterID'],
+				$voter['Voter']['FirstName'],
+				$voter['Voter']['LastName'],
+				"\r\n"
+			);
+			fputcsv($csv_file, $row);
+		}
+		fclose($csv_file);
+	}
+
+
+	// this function will query for a voter list given the voter search array
+	private function query_voters($voter)
+	{
+		// build conditions for database query
+    	$conditions = array();
+    	if (!empty($voter['name'])) {
+			$conditions = array('OR' => array(
+			    array('Voter.FirstName LIKE' => '%' . $voter['name'] . '%'),
+			    array('Voter.LastName LIKE' => '%' . $voter['name'] . '%')
+			));
+    	}
+    	if(!empty($voter['gender'])) {
+    		$conditions['Voter.Gender'] = $voter['gender'];
+    	}
+    	if (!empty($voter['address'])) {
+    		$conditions['ResidentialAddress.Address1 LIKE'] = '%' . $voter['address'] . '%';
+    	}
+    	if (!empty($voter['city'])) {
+    		$conditions['ResidentialAddress.City'] = $voter['city'];
+    	}
+    	if (!empty($voter['zip'])) {
+    		$conditions['ResidentialAddress.Zip'] = $voter['zip'];
+    	}
+    	if (!empty($voter['party'])) {
+    		$conditions['Affiliation.Party'] = $voter['party'];
+    	}
+    	//if (!empty($voter['election_year_start'])) {
+    	//	$ele_year_start = $voter['election_year_start'];
+    	//	if(strlen($ele_year_start > 2)) {
+    	//		$ele_year_start = substr($ele_year_start, -2);
+    	//	}
+    	//	if(!empty($voter['election_year_end'])) {
+    	//		$ele_year_end = $voter['election_year_end'];
+    	//		if(strlen($ele_year_end > 2)) {
+    	//			$ele_year_end = substr($ele_year_end, -2);
+    	//		} else { 
+    	//			$ele_year_end = substr(date("Y"), -2);
+    	//		}
+    	//	}
+    	//	$conditions['ElectionHistory.Year'] = $ele_year;
+    	//}
+    	//if (!empty($voter['election_code'])) {
+    	//	$conditions['ElectionHistory.ElectionCode'] = $voter['election_code'];
+    	//}
+
+    	//var_dump($voter['election_years']);
+    	if (!empty($voter['election_years'])) {
+    		//var_dump($voter['election_years']);
+    		//die();
+    		$election_year_array = array();
+    		foreach ($voter['election_years'] as $election_year) {
+    			//$conditions['ElectionHistory.CodeYear'] = $election_year);
+    			$election_year_array[] = $election_year;
+    		}
+    		$conditions['ElectionHistory.CodeYear'] = $election_year_array;
+    	}
+
+    	if (!empty($voter['positions'])) {
+    		//var_dump($voter['positions']);
+    		foreach ($voter['positions'] as $position) {
+    			$conditions['Position.' . $position] = true;
+    		}
+    		
+    	}
+
+    	// set options for Find All 
+    	$options = array(
+    		
+    		'joins' => array(
+		        array('table'=>'election_history', 'alias' => 'ElectionHistory', 'type' => 'INNER', 'conditions' => array('Voter.VoterID = ElectionHistory.VoterID'))//,
+		        //array('table'=>'address', 'alias' => 'ResidentialAddress', 'type' => 'INNER', 'conditions' => array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
+		    ),
+		    'conditions' => $conditions, //array of conditions
+		    'recursive' => 0, //int
+		    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.Zip', 'Affiliation.Party'), //array of field names
+		    'order' => array('Voter.LastName', 'Voter.FirstName', 'ResidentialAddress.City') //, //string or array defining order
+		    //'group' => array('Model.field'), //fields to GROUP BY
+		    //'limit' => n, //int
+		    //'page' => n, //int
+		    //'offset' => n, //int
+		    //'callbacks' => true //other possible values are false, 'before', 'after'
+		);
+		//var_dump($options);
+		//die();
+
+    	$resultset = $this->Voter->find('all', $options);
+    	//var_dump($resultset);
+    	//die();
+		return $resultset;
+	}
+
 
 
 }
