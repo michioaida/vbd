@@ -43,7 +43,7 @@
 		<dd>
 			<?php 
 			if (!empty($voter['ResidentialAddress'])){
-				echo h($voter['ResidentialAddress']['Address1'] . ' ' . $voter['ResidentialAddress']['City'] . ' ' . $voter['ResidentialAddress']['State']);
+				echo h($voter['ResidentialAddress']['StreetNumber'] . ' ' . $voter['ResidentialAddress']['Address1'] . ' ' . $voter['ResidentialAddress']['City'] . ' ' . $voter['ResidentialAddress']['State']);
 			} else {
 				echo "None";
 			}?>&nbsp;

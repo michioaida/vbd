@@ -63,7 +63,8 @@ class ImportController extends AppController {
 		    //var_dump($suffix);
 
 		    //ADDRESS INFORMATION
-		    $addressLineOne = trim(substr($s,73,9)) . ' ' . trim(substr($s,82,30));
+		    $streetNumber = trim(substr($s,73,9));
+		    $addressLineOne =  trim(substr($s,82,30));
 		    $apartment = trim(substr($s,115,10));
 		    $apartmentNumber = trim(substr($s,125,10));
 		    $addressLineTwo = trim(substr($s,135,35));
@@ -80,6 +81,7 @@ class ImportController extends AppController {
 		    $telephoneNumber = trim(substr($s,270,11));
 		    $registrationDate = trim(substr($s,281,8));
 		    $registrationSource = trim(substr($s,289,30));
+		 	//var_dump($streetNumber);
 		 	//var_dump($addressLineOne);
 		    //var_dump($apartment);
 		    //var_dump($apartmentNumber);
@@ -135,7 +137,7 @@ class ImportController extends AppController {
 			// mailing adress
 		    $mailingAddress = trim(substr($s,367,40));
 		    if($mailingAddress !== NULL) {
-				$mailingLine1 = trim(substr($s,367,80)) . ' ' . trim(substr($s,407,40));
+		    	$mailingLine1 =  trim(substr($s,367,80)) . ' ' . trim(substr($s,407,40));
 				$mailingLine2 = trim(substr($s,447,40));
 				$mailingLine3 = trim(substr($s,487,40));
 				$mailingCity = trim(substr($s,527,25));
@@ -158,7 +160,7 @@ class ImportController extends AppController {
 			$absElectionCode = trim(substr($s,563,4));
 		    $absCode = trim(substr($s,567,3));
 		    $absApplicationDate = trim(substr($s,570,8));
-		    $absAddress1 = trim(substr($s,578,40)) . ' ' . trim(substr($s,618,40));
+		    $absAddress1 =  trim(substr($s,578,40)) . ' ' . trim(substr($s,618,40));
 		    $absAddress2 = trim(substr($s,658,40));
 		    $absAddress3 = trim(substr($s,698,40));
 		    $absCity = trim(substr($s,738,25));
@@ -173,7 +175,7 @@ class ImportController extends AppController {
 		    $absEligible = trim(substr($s,814,1));
 		    $specialNote = substr($s,815,40);
 		    //if ($absAddress1 != '') {
-			//	var_dump($absElectionCode);
+			//	  var_dump($absElectionCode);
 			//    var_dump($absCode);
 			//    var_dump($absApplicationDate);
 			//    var_dump($absAddress1);
@@ -233,8 +235,8 @@ class ImportController extends AppController {
 
         		// do we have residential address?
         		if ($addressLineOne !== NULL && trim($addressLineOne) !== '') {
-        			$sql = "INSERT INTO address (Address1, Address2, Address3, Apartment, City, State, Zip) " .
-        				"VALUES ('$addressLineOne','$addressLineTwo','$addressLineThree','$apartmentNumber','$city','$state','$zipcode');";
+        			$sql = "INSERT INTO address (StreetNumber, Address1, Address2, Address3, Apartment, City, State, Zip) " .
+        				"VALUES ('$streetNumber','$addressLineOne','$addressLineTwo','$addressLineThree','$apartmentNumber','$city','$state','$zipcode');";
         			//var_dump($sql);
         			if (!mysql_query($sql)) {
 						die('Invalid query: ' . mysql_error());

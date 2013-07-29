@@ -33,7 +33,7 @@
 		<tr>
 			<th><?php echo __('Name'); ?></th>
 			<th>Gender</th>
-			<th>Address</th>
+			<th>Residential Address</th>
 			<th>Party</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -46,7 +46,8 @@
 			<tr>
 				<td><?php echo h($voter['Voter']['FirstName']) . ' ' . h($voter['Voter']['LastName']); ?>&nbsp;</td>
 				<td><?php echo h($voter['Voter']['Gender']); ?>&nbsp;</td>
-				<td><?php echo 
+				<td><?php echo
+							h($voter['ResidentialAddress']['StreetNumber']) . ' ' . 
 							h($voter['ResidentialAddress']['Address1']) . ' ' . 
 							h($voter['ResidentialAddress']['City']) . ' ' . 
 							h($voter['ResidentialAddress']['Zip']); ?>&nbsp;

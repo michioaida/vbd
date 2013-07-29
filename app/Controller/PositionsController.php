@@ -46,15 +46,20 @@ class PositionsController extends AppController {
 	 * @return void
 	 */
 	public function add() {
-		// get voter object from querystring
+		// get voter object from querystring and display information
 		$voterID = $this->request->query['id'];
+		Controller::loadModel('Voter');
+		$this->set('voter', $this->Voter->find('first', array('conditions' => array('Voter.VoterID' => $voterID))));
 			
 		if ($this->request->is('post')) {
 			// create the new position object and add to database
 			$this->Position->create();
+			foreach($this->request->data['Position']['positions'] as $position) {
+				$this->Position->set($position, true);
+			}
+			
 			if ($this->Position->save($this->request->data)) {
-
-				// save the relationship between new postion record and the voter
+				// save the relationship between new position record and the voter
 				ClassRegistry::init("Voter")->save_voter_position($voterID, $this->Position->id);
 
 				$this->Session->setFlash(__('The position has been saved'));
@@ -64,10 +69,6 @@ class PositionsController extends AppController {
 			} else {
 				$this->Session->setFlash(__('The position could not be saved. Please, try again.'));
 			}
-		} else {
-			// get and display voter information
-			Controller::loadModel('Voter');
-			$this->set('voter', $this->Voter->find('first', array('conditions' => array('Voter.VoterID' => $voterID))));
 		}
 	}
 
