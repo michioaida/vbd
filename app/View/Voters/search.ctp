@@ -6,24 +6,25 @@
 	    $gender_array = array('0'=>' ** Choose Gender ** ', 'M'=>'Male', 'F'=>'Female');
 	    echo $this->Form->input('gender', array('type'=>'select', 'label'=>'Gender', 'options'=>$gender_array));
 	    $party_array = array('0'=>' ** Choose Party ** ', 'BLK'=>'Blank', 'CON'=>'Conservative', 'DEM'=>'Democratic', 'GRE'=>'Green', 'IND'=>'Independence', 'LBN'=>'Libertarian', 'LIB'=>'Liberal', 'REP'=>'Republican', 'RTL'=>'Right to Life', 'WOR'=>'Working Family', 'OTH'=>'Other');
-	    echo $this->Form->input('party', array('type'=>'select', 'label'=>'Party', 'options'=>$party_array));
-	    echo $this->Form->input("address", array('label' => 'Residential Street')); 
-	    echo $this->Form->input("city", array('label' => 'Residential City'));
-	    echo $this->Form->input("zip", array('label' => 'Residential Zipcode'));   
+	    echo $this->Form->input('party', array('div' => array('id' => 'partyDiv'), 'type'=>'select', 'label'=>'Party', 'options'=>$party_array));
+	    echo $this->Form->input("address", array('div' => array('id' => 'addressDiv'), 'label' => 'Street')); 
+	    echo $this->Form->input("city", array('div' => array('id' => 'cityDiv'), 'label' => 'City'));
+	    echo $this->Form->input("zip", array('div' => array('id' => 'zipDiv'), 'label' => 'Zipcode'));   
 	    //echo $this->Form->input("election_year_start", array('label'=>'Election Year Start (ex: 2013)')); 
 	    //echo $this->Form->input("election_year_end", array('label'=>'Election Year End (ex: 2013)'));
 	    //$election_list = array('PP'=>'Presidential Primary', 'PE'=>'Primary Election', 'GE'=>'General Election', 'PF'=>'Primary Federal', 'SE'=>'Special Election');
 	    //echo $this->Form->input('election_code', array('type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election'), 'options'=>$election_list));
 	    
-	    echo $this->Form->input('election_years', array('type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election Years'), 'options'=> array('GE07'=>'GE07', 'GE08'=>'GE08', 'GE09'=>'GE09', 'GE10'=>'GE10', 'GE11'=>'GE11', 'GE12'=>'GE12', 'PE07'=>'PE07', 'PE08'=>'PE08', 'PE09'=>'PE09', 'PE10'=>'PE10', 'PE11'=>'PE11', 'PE12'=>'PE12')));
-
+	    echo $this->Form->input('election_years', array('div' => array('id' => 'electionyearDiv'), 'type'=>'select', 'multiple'=>'checkbox', 'label'=> __('Election Years'), 'options'=> array('GE07'=>'GE07', 'GE08'=>'GE08', 'GE09'=>'GE09', 'GE10'=>'GE10', 'GE11'=>'GE11', 'GE12'=>'GE12', 'PE07'=>'PE07', 'PE08'=>'PE08', 'PE09'=>'PE09', 'PE10'=>'PE10', 'PE11'=>'PE11', 'PE12'=>'PE12')));
+		
 	    // get issues from Position Helper so we can filter result set by them
 	    $position_array = $this->Position->GetPositionArray();
-	    echo $this->Form->input('positions', array('type'=>'select', 'multiple'=>'checkbox', 'label'=>__('Positions'), 'options'=>$position_array));
-	    
+	    echo $this->Form->input('positions', array('div' => array('id' => 'positionsDiv'), 'type'=>'select', 'multiple'=>'checkbox', 'label'=>__('Positions'), 'options'=>$position_array));
+	    echo '<br style="clear: both;" />';
 	    //echo $this->Form->end(__('Search'));
 	    echo $this->Form->submit('Search', array('name'=>'submitbutton', 'value'=>'search')); 
  		echo $this->Form->submit('Export to CSV', array('name'=>'submitbutton', 'value'=>'export')); 
+ 		echo '<br style="clear: both;" />';
  		echo $this->Form->end(); 
 	    
 

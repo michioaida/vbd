@@ -16,17 +16,61 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+/** FORMS **/
+#cityDiv {
+	clear: none;
+	float: left; 
+	width: 20%;
+}
+
+#zipDiv {
+	clear: none;
+	float: left;
+	width: 20%;
+}
+
+#electionyearDiv, #positionsDiv {
+	width: 70%;
+}
+
+#positionsDiv .checkbox {
+	float: left;
+	clear: none;
+	display: inline-block;
+	padding-right: 20px;
+}
+
+
+#electionyearDiv .checkbox {
+	float: left;
+	clear: none;
+	width: 100px;
+}
+
+
+/** DEFAULTS **/
+
 * {
 	margin:0;
 	padding:0;
 }
 
+.voterHist {
+	width: 140px;
+	float: left;
+	clear: none;
+}
+
+#voterHist {
+	 width: 800px;
+}
+
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: #fff;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
-	font-size:90%;
+	font-size:100%;
 	margin: 0;
 }
 a {
@@ -48,7 +92,7 @@ h1, h2, h3, h4 {
 h1 {
 	background:#fff;
 	color: #003d4c;
-	font-size: 100%;
+	font-size: 1.5em;
 }
 h2 {
 	background:#fff;
@@ -79,11 +123,11 @@ p {
 
 #header{
 	padding: 10px 20px;
+	background-color: #003366;
 }
 #header h1 {
 	line-height:20px;
-	background: #003d4c url('../img/cake.icon.png') no-repeat left;
-	color: #fff;
+	color: #003366;
 	padding: 0px 30px;
 }
 #header h1 a {
@@ -98,9 +142,19 @@ p {
 	text-decoration: underline;
 }
 #header .light {
-	color: #fff;
+	color: #FFF;
 	float: right;
+	text-transform: Uppercase;
 }
+
+#header a.light {
+	text-decoration: none;
+}
+
+#header a.light:hover {
+	text-decoration: underline;
+}
+
 #content{
 	background: #fff;
 	clear: both;
@@ -305,8 +359,10 @@ form .required label:after {
 }
 form div.submit {
 	border: 0;
-	clear: both;
 	margin-top: 10px;
+	float: left;
+	clear: none;
+	display: inline;
 }
 label {
 	display: block;
@@ -315,14 +371,14 @@ label {
 }
 input, textarea {
 	clear: both;
-	font-size: 140%;
+	font-size: .8em;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 1%;
+	padding: 2px;
 	width:98%;
 }
 select {
 	clear: both;
-	font-size: 120%;
+	font-size: .8em;
 	vertical-align: text-bottom;
 }
 select[multiple=multiple] {
@@ -357,6 +413,8 @@ input[type=submit] {
 	font-size: 110%;
 	width: auto;
 }
+
+
 form .submit input[type=submit] {
 	background:#62af56;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
