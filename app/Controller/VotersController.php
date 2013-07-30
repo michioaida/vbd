@@ -93,91 +93,7 @@ class VotersController extends AppController {
 		$this->set('voter', $resultset);
 	}
 
-/**
- * add method
- *
- * @return void
- */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->Voter->create();
-			
-			// get plumbing variables
-			$this->request->data['Voter']['Created']['month'] = date('m');
-			$this->request->data['Voter']['Created']['day'] = date('d');
-			$this->request->data['Voter']['Created']['year'] = date('y');
 
-
-			// save request
-			if ($this->Voter->save($this->request->data)) {
-				$this->Session->setFlash(__('The voter has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The voter could not be saved. Please, try again.'));
-			}
-		}
-		$residentialAddresses = $this->Voter->ResidentialAddress->find('list');
-		$this->set(compact('residentialAddresses'));
-	}
-
-/**
- * edit method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function edit($id = null) {
-		if (!$this->Voter->exists($id)) {
-			throw new NotFoundException(__('Invalid voter'));
-		}
-		if ($this->request->is('post') || $this->request->is('put')) {
-			// we have posted back so we need to do a save
-
-			// created date
-			//$this->request->data['Voter']['Created']['month'] = date('m');
-			//$this->request->data['Voter']['Created']['day'] = date('d');
-			//$this->request->data['Voter']['Created']['year'] = date('y');
-			
-			if ($this->Voter->save($this->request->data)) {
-				$this->Session->setFlash(__('The voter has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The voter could not be saved. Please, try again.'));
-			}
-		} else {
-			// else we are displaying data only
-			$options = array('conditions' => array('Voter.' . $this->Voter->primaryKey => $id));
-			$this->request->data = $this->Voter->find('first', $options);
-	
-			// set voter variable for use on form
-			$this->set('voter', $this->request->data);
-
-		}
-		$residentialAddresses = $this->Voter->ResidentialAddress->find('list');
-		$this->set(compact('residentialAddresses'));
-	}
-
-/**
- * delete method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function delete($id = null) {
-		$this->Voter->id = $id;
-		if (!$this->Voter->exists()) {
-			throw new NotFoundException(__('Invalid voter'));
-		}
-		$this->request->onlyAllow('post', 'delete');
-		if ($this->Voter->delete()) {
-			$this->Session->setFlash(__('Voter deleted'));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->Session->setFlash(__('Voter was not deleted'));
-		$this->redirect(array('action' => 'index'));
-	}
 
 
 	// this function will handle the search functionality and redirect back to the index page to display the results
@@ -340,6 +256,67 @@ class VotersController extends AppController {
     	//die();
 		return $resultset;
 	}
+
+
+
+/**
+ * edit method
+ *
+ * @throws NotFoundException
+ * @param string $id
+ * @return void
+ 	public function edit($id = null) {
+		if (!$this->Voter->exists($id)) {
+			throw new NotFoundException(__('Invalid voter'));
+		}
+		if ($this->request->is('post') || $this->request->is('put')) {
+			// we have posted back so we need to do a save
+
+			// created date
+			//$this->request->data['Voter']['Created']['month'] = date('m');
+			//$this->request->data['Voter']['Created']['day'] = date('d');
+			//$this->request->data['Voter']['Created']['year'] = date('y');
+			
+			if ($this->Voter->save($this->request->data)) {
+				$this->Session->setFlash(__('The voter has been saved'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The voter could not be saved. Please, try again.'));
+			}
+		} else {
+			// else we are displaying data only
+			$options = array('conditions' => array('Voter.' . $this->Voter->primaryKey => $id));
+			$this->request->data = $this->Voter->find('first', $options);
+	
+			// set voter variable for use on form
+			$this->set('voter', $this->request->data);
+
+		}
+		$residentialAddresses = $this->Voter->ResidentialAddress->find('list');
+		$this->set(compact('residentialAddresses'));
+	}
+*/
+
+/**
+ * delete method
+ *
+ * @throws NotFoundException
+ * @param string $id
+ * @return void
+	public function delete($id = null) {
+		$this->Voter->id = $id;
+		if (!$this->Voter->exists()) {
+			throw new NotFoundException(__('Invalid voter'));
+		}
+		$this->request->onlyAllow('post', 'delete');
+		if ($this->Voter->delete()) {
+			$this->Session->setFlash(__('Voter deleted'));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->Session->setFlash(__('Voter was not deleted'));
+		$this->redirect(array('action' => 'index'));
+	}
+ */
 
 
 

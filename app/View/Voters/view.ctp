@@ -115,7 +115,6 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('List Voters'), array('action' => 'index')); ?> </li>
-		<!--<li><?php echo $this->Html->link(__('Edit Voter'), array('action' => 'edit', $voter['Voter']['VoterID'])); ?> </li>-->
 		<li>
 		<?php // change link depending if we have a postion for this voter or not
 			if (strlen($voter['Voter']['PositionID']) == 0) {
@@ -124,9 +123,6 @@
 				echo $this->Html->link(__('Edit Voter Positions'), array('controller' => 'positions', 'action' => 'edit', $voter['Voter']['PositionID'], '?' => array('id' => $voter['Voter']['VoterID'])));
 			} ?>
 		</li>
-		<!--<li><?php echo $this->Form->postLink(__('Delete Voter'), array('action' => 'delete', $voter['Voter']['VoterID']), null, __('Are you sure you want to delete # %s?', $voter['Voter']['VoterID'])); ?> </li>-->
-		<!--<li><?php echo $this->Html->link(__('New Voter'), array('action' => 'add')); ?> </li>-->
-		<!--<li><?php echo $this->Html->link(__('List Addresses'), array('controller' => 'addresses', 'action' => 'index')); ?> </li>-->
-		<!--<li><?php echo $this->Html->link(__('New Residential Address'), array('controller' => 'addresses', 'action' => 'add')); ?> </li>-->
+		<li><?php echo $this->Html->link(__('Search Voters'), array('action' => 'search')); ?> </li>
 	</ul>
 </div>

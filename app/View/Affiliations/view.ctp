@@ -159,7 +159,7 @@
 	<?php endif; ?>
 		<div class="actions">
 			<ul>
-				<li><?php echo $this->Html->link(__('Edit Voter'), array('controller' => 'voters', 'action' => 'edit', $affiliation['Voter']['VoterID'])); ?></li>
+				<li></li>
 			</ul>
 		</div>
 	</div>
