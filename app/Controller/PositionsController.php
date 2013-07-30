@@ -89,8 +89,35 @@ class PositionsController extends AppController {
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->Position->save($this->request->data)) {
-				$this->Session->setFlash(__('The position has been saved'));
+			
+			$voter_positions_old = $this->Position->find('first', array('conditions' => array('Position.PositionID' => $id)));
+			$voter_positions_new = $this->request->data['Position']['positions'];
+			// need to accont for empty list
+			if ($voter_positions_new === '') $voter_positions_new = array();
+			$voter_positions_save['PositionID'] = $id;
+
+			//var_dump($voter_positions_old);
+			//var_dump($voter_positions_new);
+
+			foreach($voter_positions_old['Position'] as $key => $value) {
+				//var_dump($key . ' - ' . $value);
+				if (array_search($key, $voter_positions_new) !== false) {
+					//var_dump($key . " is in array");
+					$voter_positions_save[$key] = true;
+				} else {
+					// do not modify PostionID as it is the primary key
+					if (strpos('PositionID', $key) === false) {
+						//var_dump($key . ' is NOT in array');
+						$voter_positions_save[$key] = false;
+					}
+				}
+			}
+			//var_dump($voter_positions_save);
+			//die();
+			
+			//if ($this->Position->save($this->request->data)) {
+			if ($this->Position->save($voter_positions_save)) {
+				$this->Session->setFlash(__('The positions has been saved'));
 				
 				// redirect back to voter view
 				$this->redirect(array('controller'=>'Voters', 'action'=>'view', $voterID));

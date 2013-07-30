@@ -76,7 +76,6 @@
 		<li><?php echo $this->Html->link(__('List Affiliations'), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Affiliation'), array('action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Voters'), array('controller' => 'voters', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
 	<div class="related">

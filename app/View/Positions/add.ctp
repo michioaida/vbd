@@ -16,6 +16,5 @@
 
 		<!--<li><?php echo $this->Html->link(__('List Positions'), array('action' => 'index')); ?></li>-->
 		<li><?php echo $this->Html->link(__('Voter List'), array('controller' => 'voters', 'action' => 'index')); ?> </li>
-		<!--<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>-->
 	</ul>
 </div>

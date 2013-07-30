@@ -115,6 +115,7 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('List Voters'), array('action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('Search Voters'), array('action' => 'search')); ?> </li>
 		<li>
 		<?php // change link depending if we have a postion for this voter or not
 			if (strlen($voter['Voter']['PositionID']) == 0) {
@@ -123,6 +124,5 @@
 				echo $this->Html->link(__('Edit Voter Positions'), array('controller' => 'positions', 'action' => 'edit', $voter['Voter']['PositionID'], '?' => array('id' => $voter['Voter']['VoterID'])));
 			} ?>
 		</li>
-		<li><?php echo $this->Html->link(__('Search Voters'), array('action' => 'search')); ?> </li>
 	</ul>
 </div>

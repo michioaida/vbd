@@ -22,6 +22,5 @@
 		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Address.AddressID')), null, __('Are you sure you want to delete # %s?', $this->Form->value('Address.AddressID'))); ?></li>
 		<li><?php echo $this->Html->link(__('List Addresses'), array('action' => 'index')); ?></li>
 		<li><?php echo $this->Html->link(__('List Voters'), array('controller' => 'voters', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

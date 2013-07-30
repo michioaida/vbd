@@ -49,9 +49,7 @@
 		<li><?php echo $this->Html->link(__('Edit Address'), array('action' => 'edit', $address['Address']['AddressID'])); ?> </li>
 		<li><?php echo $this->Form->postLink(__('Delete Address'), array('action' => 'delete', $address['Address']['AddressID']), null, __('Are you sure you want to delete # %s?', $address['Address']['AddressID'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Addresses'), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Address'), array('action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Voters'), array('controller' => 'voters', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Voter'), array('controller' => 'voters', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
 	<div class="related">
