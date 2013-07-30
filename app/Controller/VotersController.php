@@ -241,7 +241,7 @@ class VotersController extends AppController {
 		    'conditions' => $conditions, //array of conditions
 		    'recursive' => 0, //int
 		    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party'), //array of field names
-		    'order' => array('Voter.LastName', 'Voter.FirstName', 'ResidentialAddress.City') //, //string or array defining order
+		    'order' => array('ResidentialAddress.City', 'ResidentialAddress.Address1', 'ResidentialAddress.StreetNumber', 'Voter.LastName', 'Voter.FirstName') //, //string or array defining order
 		    //'group' => array('Model.field'), //fields to GROUP BY
 		    //'limit' => n, //int
 		    //'page' => n, //int
