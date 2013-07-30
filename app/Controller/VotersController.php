@@ -217,20 +217,31 @@ class VotersController extends AppController {
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 
 		// The column headings of your .csv file
-		$header_row = array("VoterID", "FirstName", "LastName", "Gender", "Phone", "Residential Address", "Mailing Address", "\r\n");
+		$header_row = array("VoterID", "FirstName", "LastName", "Street #", "Street Name", "City", "State", "Zip Code", "Phone", "Party", "\r\n");
 		fputcsv($csv_file, $header_row);
 
 		// Each iteration of this while loop will be a row in your .csv file where each field corresponds to the heading of the column
 		foreach($resultset as $voter)
 		{
+			
+			if (strlen($voter['Voter']['Phone']) == 11) {
+				$areacode = substr($voter['Voter']['Phone'], 0, 3);
+				$phoneNumber = substr($voter['Voter']['Phone'], 3, 8);
+				$voter['Voter']['Phone'] = $areacode . "-" . $phoneNumber;
+			}
+			
 			$row = array(
 				$voter['Voter']['VoterID'],
 				$voter['Voter']['FirstName'],
 				$voter['Voter']['LastName'],
-				$voter['Voter']['Gender'],
+				$voter['ResidentialAddress']['StreetNumber'],
+				$voter['ResidentialAddress']['Address1'],
+				$voter['ResidentialAddress']['City'],
+				$voter['ResidentialAddress']['State'],
+				$voter['ResidentialAddress']['Zip'],
 				$voter['Voter']['Phone'],
-				$voter['ResidentialAddress']['StreetNumber'] . ' ' . $voter['ResidentialAddress']['Address1'] . ' ' . $voter['ResidentialAddress']['City'] . ' ' . $voter['ResidentialAddress']['State'] . ' ' . $voter['ResidentialAddress']['Zip'],
-				$voter['MailingAddress']['Address1'] . ' ' . $voter['MailingAddress']['City'] . ' ' . $voter['MailingAddress']['State'] . ' ' . $voter['MailingAddress']['Zip'],
+				$voter['Affiliation']['Party'],
+//				$voter['MailingAddress']['Address1'] . ' ' . $voter['MailingAddress']['City'] . ' ' . $voter['MailingAddress']['State'] . ' ' . $voter['MailingAddress']['Zip'],
 				"\r\n"
 			);
 			fputcsv($csv_file, $row);
