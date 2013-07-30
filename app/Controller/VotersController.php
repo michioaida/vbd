@@ -233,14 +233,15 @@ class VotersController extends AppController {
 
     	// set options for Find All 
     	$options = array(
-    		
     		'joins' => array(
-		        array('table'=>'election_history', 'alias' => 'ElectionHistory', 'type' => 'INNER', 'conditions' => array('Voter.VoterID = ElectionHistory.VoterID'))//,
-		        //array('table'=>'address', 'alias' => 'ResidentialAddress', 'type' => 'INNER', 'conditions' => array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
+		        array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID'))//,
+		        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID')),
+		        //array('table'=>'address', 'alias'=>'MailingAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressMailingID = ResidentialAddress.AddressID')),
+		        //array('table'=>'affiliation', 'alias'=>'Affiliation', 'type'=>'LEFT', 'conditions'=>array('Voter.AffiliationID = Affiliation.AffiliationID'))
 		    ),
 		    'conditions' => $conditions, //array of conditions
 		    'recursive' => 0, //int
-		    'fields' => array('DISTINCT Voter.VoterID', 'Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party'), //array of field names
+		    'fields' => array('DISTINCT Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party'), //array of field names
 		    'order' => array('ResidentialAddress.City', 'ResidentialAddress.Address1', 'ResidentialAddress.StreetNumber', 'Voter.LastName', 'Voter.FirstName') //, //string or array defining order
 		    //'group' => array('Model.field'), //fields to GROUP BY
 		    //'limit' => n, //int

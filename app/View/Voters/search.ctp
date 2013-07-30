@@ -55,7 +55,7 @@
 				</td>
 				<td><?php echo h($voter['Affiliation']['Party']); ?>&nbsp;</td>
 				<td class="actions">
-					<?php echo $this->Html->link(__('View'), array('action' => 'view', $voter['Voter']['VoterID'])); ?>
+					<?php //echo $this->Html->link(__('View'), array('action' => 'view', $voter['Voter']['VoterID'])); ?>
 				</td>
 			</tr>
 			<?php endforeach; 
