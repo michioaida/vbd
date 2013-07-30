@@ -17,6 +17,15 @@
  */
 
 /** FORMS **/
+.voters span.title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.show_hide, .show_hide1 {
+	font-size: .8em;
+}
+
 #cityDiv {
 	clear: none;
 	float: left; 
