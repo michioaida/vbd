@@ -171,12 +171,19 @@ class VotersController extends AppController {
 	{
 		// build conditions for database query
     	$conditions = array();
-    	if (!empty($voter['name'])) {
-			$conditions = array('OR' => array(
-			    array('Voter.FirstName LIKE' => '%' . $voter['name'] . '%'),
-			    array('Voter.LastName LIKE' => '%' . $voter['name'] . '%')
-			));
+
+    	if(!empty($voter['firstName'])) {
+    		$conditions['Voter.FirstName LIKE'] = '%' . $voter['firstName'] . '%';
     	}
+    	
+    	if(!empty($voter['lastName'])) {
+    		$conditions['Voter.LastName LIKE'] = '%' . $voter['lastName'] . '%';
+    	}
+    	
+    	if(!empty($voter['gender'])) {
+    		$conditions['Voter.Gender'] = $voter['gender'];
+    	}
+    	
     	if(!empty($voter['gender'])) {
     		$conditions['Voter.Gender'] = $voter['gender'];
     	}
