@@ -2,7 +2,9 @@
 	<h2><?php echo __('Search Voters'); ?></h2>
 	<?php 
 		echo $this->Form->create("Voter", array('action' => 'search'));
-	    echo $this->Form->input("name", array('label' => 'Name'));
+	   // echo $this->Form->input("name", array('label' => 'Name'));
+	    echo $this->Form->input("firstName", array('label' => 'First Name'));
+	    echo $this->Form->input("lastName", array('label' => 'Last Name'));
 	    $gender_array = array('0'=>' ** Choose Gender ** ', 'M'=>'Male', 'F'=>'Female');
 	    echo $this->Form->input('gender', array('type'=>'select', 'label'=>'Gender', 'options'=>$gender_array));
 	    $party_array = array('0'=>' ** Choose Party ** ', 'BLK'=>'Blank', 'CON'=>'Conservative', 'DEM'=>'Democratic', 'GRE'=>'Green', 'IND'=>'Independence', 'LBN'=>'Libertarian', 'LIB'=>'Liberal', 'REP'=>'Republican', 'RTL'=>'Right to Life', 'WOR'=>'Working Family', 'OTH'=>'Other');
