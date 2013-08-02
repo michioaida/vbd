@@ -169,21 +169,18 @@ class VotersController extends AppController {
 	// this function will query for a voter list given the voter search array
 	private function query_voters($voter)
 	{
+		// make sure we can execute big selects
+		$sql = "SET SQL_BIG_SELECTS=1";
+		$this->Voter->query($sql);
+
 		// build conditions for database query
     	$conditions = array();
-
     	if(!empty($voter['firstName'])) {
     		$conditions['Voter.FirstName LIKE'] = '%' . $voter['firstName'] . '%';
     	}
-    	
     	if(!empty($voter['lastName'])) {
     		$conditions['Voter.LastName LIKE'] = '%' . $voter['lastName'] . '%';
     	}
-    	
-    	if(!empty($voter['gender'])) {
-    		$conditions['Voter.Gender'] = $voter['gender'];
-    	}
-    	
     	if(!empty($voter['gender'])) {
     		$conditions['Voter.Gender'] = $voter['gender'];
     	}
