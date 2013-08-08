@@ -2,7 +2,6 @@
 App::uses('AppController', 'Controller');
 App::uses('ConnectionManager', 'Model');
 
-
 /**
  * Import Controller
  *
@@ -30,11 +29,179 @@ class ImportController extends AppController {
 	}
 
 
+	// this function will import a specific file in a specific location for Oswego County
+	public function import_oswego_city() {
+		ini_set('auto_detect_line_endings', true);	// wont dectect individual lines w/o this
+
+		$countyName = "Oswego";
+		$dataSource = ConnectionManager::getDataSource('default');	
+		$dbhost = $dataSource->config['host'];
+		$dbuser = $dataSource->config['login']; 
+		$dbpass = "";
+		$dbname = $dataSource->config['database'];
+		$filepath = 'C:\\Users\\Chad\\Documents\\WebGigz\\VoterDB\\OSWEGO_COUNTY_ALBION-OSWEGO_CITY.CSV';
+
+		// create database connection		
+		mysql_connect($dbhost, $dbuser, $dbpass) or die("MySQL Error: " . mysql_error());
+		mysql_select_db($dbname) or die("MySQL Error: " . mysql_error());
+
+		$rowIndex = 1;
+		if (($handle = fopen($filepath, "r")) !== FALSE) {
+		    while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
+		    	$num = count($row);
+		        	
+		        // header
+		        if ($rowIndex == 1) {
+		        	// print out this loop to view index of columns and column names
+		        	//echo "<p> $num fields in line $rowIndex: <br /></p>\n";
+		        	//for ($c=0; $c < $num; $c++) {
+			        //    echo $c . " - " . $row[$c] . "<br />\n";
+			        //}
+		        } else {
+		        	// NOT a header, an actual record
+					//var_dump($row);
+					//die();
+
+					//remove special characters for SQL insert
+				    $firstName = mysql_real_escape_string($row[1]);
+				    $middleName = mysql_real_escape_string($row[2]);
+				    $lastName = mysql_real_escape_string($row[3]);
+					$sql = "INSERT INTO voter (Source, SourceID, FirstName, MiddleName, LastName, Suffix, DOB, Gender, EyeColor, Height, Phone" .
+						") VALUES ('" . $countyName . " County', '$row[0]', '$firstName', '$middleName', '$lastName', '$row[4]', '$row[16]', '$row[17]', '$row[18]', '$row[19]"."-"."$row[20]', '$row[21]"."-"."$row[22]')";
+					//var_dump($sql);
+					//die();
+
+					if (!mysql_query($sql)) {
+						die('Invalid query: ' . mysql_error());
+    				} else {
+        				// get primary key of record
+        				$voterPrimaryKey = mysql_insert_id();
+						//var_dump($voterPrimaryKey);
+						//die();    			
+
+
+		        		// do we have residential address?
+		        		if ($row[5] !== NULL && trim($row[5]) !== '') {
+		        		    // remove special characters for SQL Insert
+		        		    $streetName = mysql_real_escape_string($row[7]);
+						    $addressLineOne = mysql_real_escape_string($row[8]);
+						    $addressLineTwo = mysql_real_escape_string($row[9]);
+						    
+		        			$sql = "INSERT INTO address (StreetNumber, Address1, Address2, Address3, City, State, Zip) " .
+		        				"VALUES ('$row[5]', '$streetName', '$addressLineOne', '$addressLineTwo', '$row[11]', '$row[12]', '$row[13]');";
+		        			//var_dump($sql);
+		        			if (!mysql_query($sql)) {
+								die('Invalid query: ' . mysql_error());
+		    				} else {
+		        				// get primary key of record
+		        				$residentialAddressPrimaryKey = mysql_insert_id();
+		        				//var_dump($residentialAddressPrimaryKey);
+		        				$sql = "UPDATE voter SET AddressResidentialID=" . $residentialAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+		        				//var_dump($sql);
+		        				if (!mysql_query($sql)) {
+									die('Invalid query: ' . mysql_error());
+		    					}
+		        			}
+		    			}
+
+		    			// do we have mailing address?
+		    			if($row[41] !== NULL && trim($row[41]) !== '') {
+		    				// remove special characters for SQL Insert
+						    $mailingLine1 = mysql_real_escape_string($row[41]);
+						    $mailingLine2 = mysql_real_escape_string($row[42]);
+						    $mailingLine3 = mysql_real_escape_string($row[43]);
+
+		    				$sql = "INSERT INTO address (Address1, Address2, Address3, City, State, Zip) " .
+		        				"VALUES ('$mailingLine1', '$mailingLine2', '$mailingLine3', '$row[45]', '$row[46]', '$row[47]');";
+		        			//var_dump($sql);
+		        			if (!mysql_query($sql)) {
+								die('Invalid query: ' . mysql_error());
+		    				} else {
+		        				// get primary key of record
+		        				$mailingAddressPrimaryKey = mysql_insert_id();
+		        				$sql = "UPDATE voter SET AddressMailingID=" . $mailingAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+		        				//var_dump($sql);
+		        				if (!mysql_query($sql)) {
+									die('Invalid query: ' . mysql_error());
+		    					}
+		    				}
+		    			}
+
+		    			// do we have a absentee address?
+		    			if($row[40] == 'Y') {
+		    				// remove special characters for SQL Insert
+						    $absAddress1 = mysql_real_escape_string($row[52]);
+						    $absAddress2 = mysql_real_escape_string($row[53]);
+						    $absAddress3 = mysql_real_escape_string($row[54]);
+
+		    				$sql = "INSERT INTO address (Address1, Address2, Address3, City, State, Zip) " .
+		        				"VALUES ('$absAddress1', '$absAddress2', '$absAddress3', '$row[56]', '$row[57]', '$row[58]');";
+		        			//var_dump($sql);
+		        			if (!mysql_query($sql)) {
+								die('Invalid query: ' . mysql_error());
+		    				} else {
+		        				// get primary key of record
+		        				$absenteeAddressPrimaryKey = mysql_insert_id();
+		        				$sql = "UPDATE voter SET AddressAbsenteeID=" . $absenteeAddressPrimaryKey . " WHERE VoterID=" . $voterPrimaryKey;
+		        				//var_dump($sql);
+		        				if (!mysql_query($sql)) {
+									die('Invalid query: ' . mysql_error());
+		    					}
+		    				}
+		    			}
+
+		    			// insert affilication information
+		    			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict)" .
+		    				"VALUES ('$row[26]', '" . $countyName . "', '$row[27]', '$row[28]', '$row[29]', '$row[30]', '$row[31]', '$row[32]', '$row[33]');";
+		    			//var_dump($sql);
+		    			if (!mysql_query($sql)) {
+							die('Invalid query: ' . mysql_error());
+						} else {
+		    				// get primary key of record
+		    				$affiliationID = mysql_insert_id();
+		    				$sql = "UPDATE voter SET AffiliationID=" . $affiliationID . " WHERE VoterID=" . $voterPrimaryKey;
+		    				//var_dump($sql);
+		        			if (!mysql_query($sql)) {
+								die('Invalid query: ' . mysql_error());
+							}
+						}
+
+						// do we have a voter history?
+		    			if($row[67] !== NULL && $row[67] !== '') {
+		    				$voterHistoryArray = str_split($row[67], 2);
+		    				//var_dump($voterHistoryArray);
+		    				if (count($voterHistoryArray) !== 0) {
+			    				for($i=0; $i<count($voterHistoryArray); $i+=2) { 
+			    					//var_dump($i);
+			    					$sql = "INSERT INTO election_history (VoterID, ElectionCode, ElectionYear, CodeYear) VALUES ($voterPrimaryKey, '" . $voterHistoryArray[$i] . "', '" . $voterHistoryArray[$i + 1] . "', '" . $voterHistoryArray[$i] . $voterHistoryArray[$i + 1] . "'); ";
+			    					//var_dump($sql);
+			    					//die();
+				    				if (!mysql_query($sql)) {
+										die('Invalid query: ' . mysql_error());
+									}
+			    				}
+			    			}
+		    			}
+					}
+					//die();
+			    }
+		        $rowIndex++;
+		    }
+		    fclose($handle);
+		}
+
+		var_dump("Successful " . $countyName . " Insert");
+		die();
+	}
+
+
+
 	// this function will import a specific file in a specific location for Madison County
 	public function import_madison() {
 		//var_dump("Madison County Import");
 		//die();
 
+		$countyName = "Madison";
 		$dataSource = ConnectionManager::getDataSource('default');	
 		$dbhost = $dataSource->config['host'];
 		$dbuser = $dataSource->config['login']; 
@@ -221,7 +388,7 @@ class ImportController extends AppController {
 		    $absAddress3 = mysql_real_escape_string($absAddress3);
 
 			$sql = "INSERT INTO voter (Source, SourceID, FirstName, LastName, MiddleName, Suffix, DOB, Gender, EyeColor, Height, Phone" .
-				") VALUES ('Madison County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
+				") VALUES ('" . $countyName . " County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
 			//var_dump($sql);
 			//die();
 
@@ -290,7 +457,7 @@ class ImportController extends AppController {
     			
     			// insert affilication information
     			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict, CommonCouncilDistrict, CountyLegislativeDistrict, VillageCode)" .
-    				"VALUES ('$affliation','Madison','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
+    				"VALUES ('$affliation','" . $countyName . "','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
     			//var_dump($sql);
     			if (!mysql_query($sql)) {
 					die('Invalid query: ' . mysql_error());
@@ -320,13 +487,14 @@ class ImportController extends AppController {
     	}
 
 		fclose($fp) or die("can't close file");	
-		var_dump("SUCCESS!!!");
+		var_dump("Successful " . $countyName . " County Insert");
 		die();
 	}
 
 
 	// this function will import a specific file in a specific location for Cortland County
 	public function import_cortland() {
+		$countyName = "Cortland";
 		$dataSource = ConnectionManager::getDataSource('default');	
 		$dbhost = $dataSource->config['host'];
 		$dbuser = $dataSource->config['login']; 
@@ -524,7 +692,7 @@ class ImportController extends AppController {
 		    $absAddress3 = mysql_real_escape_string($absAddress3);
 
 			$sql = "INSERT INTO voter (Source, SourceID, FirstName, LastName, MiddleName, Suffix, DOB, Gender, EyeColor, Height, Phone" .
-				") VALUES ('Madison County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
+				") VALUES ('" . $countyName . " County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
 			//var_dump($sql);
 			//die();
 
@@ -593,7 +761,7 @@ class ImportController extends AppController {
     			
     			// insert affilication information
     			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict, CommonCouncilDistrict, CountyLegislativeDistrict, VillageCode)" .
-    				"VALUES ('$affliation','Madison','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
+    				"VALUES ('$affliation','" . $countyName . "','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
     			//var_dump($sql);
     			if (!mysql_query($sql)) {
 					die('Invalid query: ' . mysql_error());
@@ -623,19 +791,20 @@ class ImportController extends AppController {
     	}
 
 		fclose($fp) or die("can't close file");	
-		var_dump("SUCCESS!!!");
+		var_dump("Successful " . $countyName . " County Insert");
 		die();
 	}
 
 
 	// this function will import a specific file in a specific location for Orange County
 	public function import_orange() {
+		$countyName = "Orange";
 		$dataSource = ConnectionManager::getDataSource('default');	
 		$dbhost = $dataSource->config['host'];
 		$dbuser = $dataSource->config['login']; 
 		$dbpass = "";
 		$dbname = $dataSource->config['database'];
-		$databaseTXT = 'C:\\Users\\Chad\\Desktop\\VoterDBImport\\VOTER DATABASES\\ORANGE-COUNTY-2012.txt';
+		$databaseTXT = 'C:\\Users\\Chad\\Documents\\WebGigz\\VoterDB\\ORANGE-COUNTY-2012.txt';
 
 		// create database connection		
 		mysql_connect($dbhost, $dbuser, $dbpass) or die("MySQL Error: " . mysql_error());
@@ -838,7 +1007,7 @@ class ImportController extends AppController {
 			*/
 		
 			$sql = "INSERT INTO voter (Source, SourceID, FirstName, LastName, MiddleName, Suffix, DOB, Gender, EyeColor, Height, Phone" .
-				") VALUES ('ORANGE-COUNTY-2012.txt','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
+				") VALUES ('" . $countyName . " County','$voterId','$firstName','$lastName','$middleName','$suffix','$dateofBirth','$sex','$eyeColor','$height','$telephoneNumber')";
 			//var_dump($sql);
 			//die();
 			
@@ -915,7 +1084,7 @@ class ImportController extends AppController {
     			
     			// insert affilication information
     			$sql = "INSERT INTO affiliation (Party, County, Town, Ward, District, CongressionalDistrict, SenatorialDistrict, LegislativeDistrict, SchoolDistrict, CommonCouncilDistrict, CountyLegislativeDistrict, VillageCode)" .
-    				"VALUES ('$affliation','Orange','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
+    				"VALUES ('$affliation','" . $countyName . "','$town','$ward','$district','$congressionalDistrict','$senatorialDistrict','$legislativeDistrict','$schoolDistrict','$commonCouncilDistrict','$countyLegislativeDistrict','$villageCode');";
     			//var_dump($sql);
     			if (!mysql_query($sql)) {
 					die('Invalid query: ' . mysql_error());
@@ -931,7 +1100,7 @@ class ImportController extends AppController {
     		}
     	}
 		fclose($fp) or die("can't close file");	
-		var_dump("SUCCESS!!!");
+		var_dump("Successful " . $countyName . " County Insert");
 		die();
 	}
 

@@ -66,6 +66,28 @@ class DATABASE_CONFIG {
 		//'encoding' => 'utf8',
 	);
 
+	public $sweeton = array(
+		'datasource' => 'Database/Mysql',
+		'persistent' => false,
+		'host' => 'mysql51-088.wc1.ord1.stabletransit.com',
+		'login' => '833731_sweeton',
+		'password' => 'p7O83M4a12',
+		'database' => '833731_sweeton',
+		'prefix' => '',
+		//'encoding' => 'utf8',
+	);
+
+	public $hanna = array(
+		'datasource' => 'Database/Mysql',
+		'persistent' => false,
+		'host' => 'mysql51-088.wc1.ord1.stabletransit.com',
+		'login' => '833731_hanna',
+		'password' => 'R1Y68Nu46m',
+		'database' => '833731_hanna',
+		'prefix' => '',
+		//'encoding' => 'utf8',
+	);
+
 	public $default = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
