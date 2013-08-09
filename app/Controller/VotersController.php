@@ -94,27 +94,30 @@ class VotersController extends AppController {
 	}
 
 
+	// this function will handle our search results
+	public function search_result()
+	{
+		//var_dump($this->params->query);
+		//die();
+		// Was the export button clicked?
+    	if(stristr($this->params->query['submitbutton'], 'export')) {
+    		//$this->export($resultset);
+    		//$this->redirect(array('action'=>'export', $resultset));
+    		$this->setAction('export');
+    		//$this->requestAction(array('action'=>'export'), array('pass'=>$resultset), array('return'));
+    	} else {
+    		// query voters based on search criteria
+        	$resultset = $this->query_voters($this->params->query);
+    		$this->set('voters', $resultset);	
+    	}
+	}
 
-
-	// this function will handle the search functionality and redirect back to the index page to display the results
+	// this function will handle the search input
 	public function search() {
-
-        if ($this->request->is('post')) {
-        	
-        	if(stristr($this->params['data']['submitbutton'], 'export')) {
-        		//$this->export($resultset);
-        		//$this->redirect(array('action'=>'export', $resultset));
-        		$this->setAction('export');
-        		//$this->requestAction(array('action'=>'export'), array('pass'=>$resultset), array('return'));
-        	} else {
-        		// query voters based on search criteria
-	        	$resultset = $this->query_voters($this->data['Voter']);
-        		$this->set('voters', $resultset);	
-        	}
-		}
     } 
 
 
+    // this function will export the current input screen to CSV format
 	public function export() {
 		// do not allow any HTML to return from this function
 		$this->autoRender = false;
@@ -122,7 +125,7 @@ class VotersController extends AppController {
 		//ini_set('max_execution_time', 600); //increase max_execution_time to 10 min if data set is very large
 
 		// query voters based on search criteria
-    	$resultset = $this->query_voters($this->data['Voter']);
+    	$resultset = $this->query_voters($this->params->query);
 
 		//create a file
 		$filename = "voter_list_".date("Ymd").".csv";
@@ -195,27 +198,7 @@ class VotersController extends AppController {
     	}
     	if (!empty($voter['party'])) {
     		$conditions['Affiliation.Party'] = $voter['party'];
-    	}
-    	//if (!empty($voter['election_year_start'])) {
-    	//	$ele_year_start = $voter['election_year_start'];
-    	//	if(strlen($ele_year_start > 2)) {
-    	//		$ele_year_start = substr($ele_year_start, -2);
-    	//	}
-    	//	if(!empty($voter['election_year_end'])) {
-    	//		$ele_year_end = $voter['election_year_end'];
-    	//		if(strlen($ele_year_end > 2)) {
-    	//			$ele_year_end = substr($ele_year_end, -2);
-    	//		} else { 
-    	//			$ele_year_end = substr(date("Y"), -2);
-    	//		}
-    	//	}
-    	//	$conditions['ElectionHistory.Year'] = $ele_year;
-    	//}
-    	//if (!empty($voter['election_code'])) {
-    	//	$conditions['ElectionHistory.ElectionCode'] = $voter['election_code'];
-    	//}
-
-    	//var_dump($voter['election_years']);
+    	}    	
     	if (!empty($voter['election_years'])) {
     		//var_dump($voter['election_years']);
     		//die();
@@ -226,7 +209,6 @@ class VotersController extends AppController {
     		}
     		$conditions['ElectionHistory.CodeYear'] = $election_year_array;
     	}
-
     	if (!empty($voter['positions'])) {
     		//var_dump($voter['positions']);
     		foreach ($voter['positions'] as $position) {
@@ -234,6 +216,8 @@ class VotersController extends AppController {
     		}
     		
     	}
+		//var_dump($conditions);
+		//die();
 
     	// set options for Find All 
     	$options = array(
@@ -256,7 +240,17 @@ class VotersController extends AppController {
 		//var_dump($options);
 		//die();
 
-    	$resultset = $this->Voter->find('all', $options);
+		// variable to allow for pagination and defines its properties
+		$this->paginate = array(
+	        'limit' => 20
+	        //'order' => array('Voter.Name' => 'asc')
+	    );
+
+    	//$resultset = $this->Voter->find('all', $options);
+		$resultset = $this->paginate('Voter', $conditions);
+		//var_dump($resultset);
+		//die();
+		
     	//var_dump($resultset);
     	//die();
 		return $resultset;
