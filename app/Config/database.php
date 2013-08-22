@@ -88,13 +88,24 @@ class DATABASE_CONFIG {
 		//'encoding' => 'utf8',
 	);
 
+	public $mcmahon = array(
+		'datasource' => 'Database/Mysql',
+		'persistent' => false,
+		'host' => 'mysql51-062.wc1.ord1.stabletransit.com',
+		'login' => '833731_mcmahon',
+		'password' => 'R59e1p21OX',
+		'database' => '833731_mcmahon',
+		'prefix' => '',
+		//'encoding' => 'utf8',
+	);
+
 	public $default = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => 'voterdb',
+		'database' => '833731_mcmahon',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

@@ -12,7 +12,10 @@
 		if (isset($voters)){
 			foreach ($voters as $voter): ?>
 			<tr>
-				<td><?php echo h($voter['Voter']['FirstName']) . ' ' . h($voter['Voter']['LastName']); ?>&nbsp;</td>
+				<td><?php 
+						echo $this->Html->link(h($voter['Voter']['FirstName']) . ' ' . h($voter['Voter']['LastName']), array('controller'=>'Voters', 'action'=>'view', $voter['Voter']['VoterID'])); 
+					?>&nbsp;
+				</td>
 				<td><?php echo h($voter['Voter']['Gender']); ?>&nbsp;</td>
 				<td><?php echo
 							h($voter['ResidentialAddress']['StreetNumber']) . ' ' . 
