@@ -214,6 +214,9 @@ class ImportController extends AppController {
 		//var_dump($fp);		
 		
 		while ($s = fgets($fp,1024)) {
+			//CLEAR VOTER ARRAY FROM PREVIOUS OPERATION
+			$voterHistoryArray = array();
+			
 		    $voterId = trim(substr($s,0,15));  
 		    $firstName = trim(substr($s,15,15));  
 		    $middleName = trim(substr($s,30,15)); 
@@ -284,6 +287,10 @@ class ImportController extends AppController {
 		    $absEligible = trim(substr($s,814,1));
 		    // VOTER HISTORY
 		    $voterHistory = trim(substr($s,815,40));
+		    
+		    //DELETE STRAY CHARACTER ^
+		    $voterHistory = str_replace('^','',$voterHistory);
+		    
 		    if ($voterHistory !== NULL && $voterHistory !== '') {
 		    	$voterHistoryArray = str_split($voterHistory, 2);
 		    	//var_dump($voterHistoryArray);
