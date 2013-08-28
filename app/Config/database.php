@@ -91,10 +91,11 @@ class DATABASE_CONFIG {
 	public $mcmahon = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => 'mysql51-062.wc1.ord1.stabletransit.com',
-		'login' => '833731_mcmahon',
-		'password' => 'R59e1p21OX',
-		'database' => '833731_mcmahon',
+		'host' => '192.237.180.90',
+		//'host' => '10.208.150.160',
+		'login' => 'root',
+		'password' => 'a9yWtc6L',
+		'database' => 'onondaga',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

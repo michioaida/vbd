@@ -219,6 +219,7 @@ class VotersController extends AppController {
     	}    	
     	if (!empty($voter['election_years'])) {
     		$voterHistoryFlag = true;
+    		$voterHisotryCount = count($voter['election_years']);
     		//var_dump($voter['election_years']);
     		//die();
     		$election_year_array = array();
@@ -274,13 +275,20 @@ class VotersController extends AppController {
 		//create JOIN array only if we need it
 		$joinArray = array();
 		if ($voterHistoryFlag === true) {
-			$voterHistoryArray = array(
+			$voterHistoryJoinArray = array(
 				'table'=>'election_history', 
 				'alias'=>'ElectionHistory', 
 				'type'=>'LEFT', 
 				'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID')
 			);
-			array_push($joinArray, $voterHistoryArray);
+			array_push($joinArray, $voterHistoryJoinArray);
+		}
+
+		// create GROUP BY array only if we need it
+		$groupByArray = array();
+		if ($voterHistoryFlag === true) {
+			$voterHistoryGroupBy = 'Voter.VoterID HAVING count(Voter.VoterID) = ' . $voterHisotryCount;
+			array_push($groupByArray, $voterHistoryGroupBy);
 		}
 
 		// variable to allow for pagination and defines its properties
@@ -295,7 +303,8 @@ class VotersController extends AppController {
 		        //array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID')))
 		        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
 			//)
-			'joins' => $joinArray
+			'joins' => $joinArray,
+			'group' => $groupByArray
 	    );
 
     	// NOTE: use this resultset for PAGED data
