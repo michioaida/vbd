@@ -69,10 +69,11 @@ class DATABASE_CONFIG {
 	public $sweeton = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => 'mysql51-088.wc1.ord1.stabletransit.com',
-		'login' => '833731_sweeton',
-		'password' => 'p7O83M4a12',
-		'database' => '833731_sweeton',
+		'host' => '192.237.180.90',		// development
+		//'host' => '10.208.150.160',	// production
+		'login' => 'root',
+		'password' => 'a9yWtc6L',
+		'database' => 'orange',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
@@ -91,8 +92,8 @@ class DATABASE_CONFIG {
 	public $mcmahon = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => '192.237.180.90',
-		//'host' => '10.208.150.160',
+		'host' => '192.237.180.90',			// development
+		//'host' => '10.208.150.160',		// production
 		'login' => 'root',
 		'password' => 'a9yWtc6L',
 		'database' => 'onondaga',
