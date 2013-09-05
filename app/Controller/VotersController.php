@@ -242,35 +242,8 @@ class VotersController extends AppController {
 		//var_dump($conditions);
 		//die();
 
-    	/*
-    	//*******************************************************************************
-    	// NOTE: NOT USED FOR PAGINATION, KEPT AROUND FOR LEGACY PURPOSES, DO NOT DELETE
-    	//*******************************************************************************
-    	// set options for Find All 
-    	$options = array(
-    		'joins' => array(
-		        //array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID'))//,
-		        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID')),
-		        //array('table'=>'address', 'alias'=>'MailingAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressMailingID = ResidentialAddress.AddressID')),
-		        //array('table'=>'affiliation', 'alias'=>'Affiliation', 'type'=>'LEFT', 'conditions'=>array('Voter.AffiliationID = Affiliation.AffiliationID'))
-		    ),
-		    'conditions' => $conditions, //array of conditions
-		    'recursive' => 0, 	// automated joins producing a BIG resultset
-		    //'recursive' => -1,	// -1 doesn't do ANY joins for us, we need to do them manually
-		    'fields' => array('DISTINCT Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party'), //array of field names
-		    //'order' => array('ResidentialAddress.City', 'ResidentialAddress.Address1', 'ResidentialAddress.StreetNumber', 'Voter.LastName', 'Voter.FirstName') //, //string or array defining order
-		    //'group' => array('Model.field'), //fields to GROUP BY
-		    //'limit' => n, //int
-		    //'page' => n, //int
-		    //'offset' => n, //int
-		    //'callbacks' => true //other possible values are false, 'before', 'after'
-		);
-		//var_dump($options);
-		//die();
-    	//*******************************************************************************
-    	// NOTE: NOT USED FOR PAGINATION, KEPT AROUND FOR LEGACY PURPOSES, DO NOT DELETE
-    	//*******************************************************************************
-		*/
+		//create field array of the fields we need
+		$fieldArray = array('DISTINCT Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party');
 
 		//create JOIN array only if we need it
 		$joinArray = array();
@@ -283,6 +256,8 @@ class VotersController extends AppController {
 			);
 			array_push($joinArray, $voterHistoryJoinArray);
 		}
+		//var_dump($joinArray);
+		//die();
 
 		// create GROUP BY array only if we need it
 		$groupByArray = array();
@@ -291,27 +266,56 @@ class VotersController extends AppController {
 			array_push($groupByArray, $voterHistoryGroupBy);
 		}
 
-		// variable to allow for pagination and defines its properties
-		$this->paginate = array(
-			'conditions' => $conditions, 	// array of conditions above
-			'fields' => array('DISTINCT Voter.FirstName', 'Voter.LastName', 'Voter.Gender', 'Voter.Phone', 'ResidentialAddress.StreetNumber', 'ResidentialAddress.Address1', 'ResidentialAddress.City', 'ResidentialAddress.State', 'ResidentialAddress.Zip', 'MailingAddress.Address1', 'MailingAddress.City', 'MailingAddress.State', 'MailingAddress.Zip', 'Affiliation.Party'), //array of field names
-			'limit' => 20,					// pagination result limit
-	        'recursive' => 0, 				// automated joins producing a BIG resultset
-		    //'recursive' => -1,			// -1 doesn't do ANY joins for us, we need to do them manually
-		    //'order' => array('Voter.Name' => 'asc')
-	        //'joins' => array(
-		        //array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID')))
-		        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
-			//)
-			'joins' => $joinArray,
-			'group' => $groupByArray
-	    );
+		// check to see if we need to export or do a form paginate search
+		if (strpos($voter['submitbutton'],'Export') !== false) {
+			//var_dump("export");
 
-    	// NOTE: use this resultset for PAGED data
-		$resultset = $this->paginate('Voter');
+	    	// set options for Find All 
+	    	$options = array(
+	    		'joins' => $joinArray,
+			        //array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID'))//,
+			        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID')),
+			        //array('table'=>'address', 'alias'=>'MailingAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressMailingID = ResidentialAddress.AddressID')),
+			        //array('table'=>'affiliation', 'alias'=>'Affiliation', 'type'=>'LEFT', 'conditions'=>array('Voter.AffiliationID = Affiliation.AffiliationID'))
+			    	//),
+			    'conditions' => $conditions, 	//array of conditions
+			    'recursive' => 0, 				// automated joins producing a BIG resultset
+			    'recursive' => 0,				// -1 doesn't do ANY joins for us, we need to do them manually
+			    'fields' => $fieldArray, 		//array of field names
+			    //'order' => array('ResidentialAddress.City', 'ResidentialAddress.Address1', 'ResidentialAddress.StreetNumber', 'Voter.LastName', 'Voter.FirstName') //, //string or array defining order
+			    'group' => $groupByArray, 		//fields to GROUP BY
+			    //'limit' => n, //int
+			    //'page' => n, //int
+			    //'offset' => n, //int
+			    //'callbacks' => true //other possible values are false, 'before', 'after'
+			);
+			//var_dump($options);
+			//die();
 
-    	// NOTE: use this resultset for NON-PAGED data
-    	//$resultset = $this->Voter->find('all', $options);
+    		// NOTE: use this resultset for NON-PAGED data
+	    	$resultset = $this->Voter->find('all', $options);
+		} else {
+			//var_dump("paginate");
+
+			// variable to allow for pagination and defines its properties
+			$this->paginate = array(
+				'conditions' => $conditions, 	// array of conditions above
+				'fields' => $fieldArray, 		//array of field names
+				'limit' => 20,					// pagination result limit
+		        'recursive' => 0, 				// automated joins producing a BIG resultset
+			    //'recursive' => -1,			// -1 doesn't do ANY joins for us, we need to do them manually
+			    //'order' => array('Voter.Name' => 'asc')
+		        //'joins' => array(
+			        //array('table'=>'election_history', 'alias'=>'ElectionHistory', 'type'=>'LEFT', 'conditions'=>array('Voter.VoterID = ElectionHistory.VoterID')))
+			        //array('table'=>'address', 'alias'=>'ResidentialAddress', 'type'=>'LEFT', 'conditions'=>array('Voter.AddressResidentialID = ResidentialAddress.AddressID'))
+				//)
+				'joins' => $joinArray,
+				'group' => $groupByArray
+		    );
+
+	    	// NOTE: use this resultset for PAGED data
+			$resultset = $this->paginate('Voter');
+		}
 
 		//var_dump($resultset);
 		//die();
