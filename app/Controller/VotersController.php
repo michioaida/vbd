@@ -110,9 +110,74 @@ class VotersController extends AppController {
     	}
 	}
 
-	// this function will handle the search input
+	// this function will handle the search view
 	public function search() {
     } 
+
+
+    // this function will handle the history view
+    public function history() {
+    	if(count($this->params->query) > 0) {
+    		$searchStack = array();
+			if ($this->params->query['firstName'] != '')
+				array_push($searchStack, array('Voter.FirstName'=>$this->params->query['firstName']));
+			if ($this->params->query['lastName'] != '')
+				array_push($searchStack, array('Voter.LastName'=>$this->params->query['lastName']));
+    		$resultset = $this->Voter->find('all', array('conditions' => $searchStack));
+    	} else {
+    		$resultset = null;
+    	}
+    	$this->set('voterhistory', $resultset);
+	}
+
+
+	// this function will 
+	public function historyupdate() {
+		if ($this->request->is('post')) {
+			//var_dump($this->request->data);
+			$buttonPressed = $this->request->data['votedbutton'];
+			//var_dump($buttonPressed);
+			$voterID = $this->request->data['VoterID'];
+			//var_dump($voterID);
+			$codeYear = $this->request->data['CodeYear'];
+			//var_dump($codeYear);
+
+			// if user has already voted in this current election, delete it
+			if ($buttonPressed === 'Voted') {
+				$currentVoter = $this->Voter->find('first', array('conditions' => array('Voter.'.$this->Voter->primaryKey=>$voterID)));
+				var_dump($currentVoter['ElectionHistory']);
+
+				$electionHistoryID = null;
+				foreach ($currentVoter['ElectionHistory'] as $eleHis) {
+					var_dump($eleHis['CodeYear']);
+					if ($eleHis['CodeYear'] == $codeYear)
+						$electionHistoryID = $eleHis['ID'];
+				}
+				//var_dump($electionHistoryID);
+				//die();
+				
+				$this->Voter->ElectionHistory->delete($electionHistoryID);
+			}
+
+			// if user has not already voted in this corrent election, add it
+			if ($buttonPressed === 'Not Voted') {
+				$newHistory = array(
+         			'VoterID' => "$voterID",
+         			'ElectionCode'=>substr($codeYear, 0, 2),
+         			'ElectionYear'=>substr($codeYear, 2, 2),
+         			'CodeYear'=>$codeYear);
+				$this->Voter->ElectionHistory->create();
+				$this->Voter->ElectionHistory->save(array('ElectionHistory' => $newHistory));
+			}
+
+			// redirect back to history
+			$this->Session->setFlash(__('Voter History has been saved'));
+			$this->redirect(array('action' => 'history', 
+								'?' => array('firstName'=>$this->request->data['FirstName'],
+											'lastName'=>$this->request->data['LastName'],
+											'election'=>$this->request->data['Election'])));
+		}
+	}
 
 
     // this function will export the current input screen to CSV format
@@ -326,6 +391,7 @@ class VotersController extends AppController {
     	//die();
 		return $resultset;
 	}
+
 
 
 

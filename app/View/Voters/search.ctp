@@ -56,5 +56,6 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('List Voters'), array('action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('Voter History'), array('action' => 'history')); ?> </li>
 	</ul>
 </div>

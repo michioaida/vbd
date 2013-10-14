@@ -51,6 +51,5 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link('Back',"javascript:history.back()"); ?></li>
-		<li><?php echo $this->Html->link(__('Export Page List'), array('action' => 'export')); ?> </li>
 	</ul>
 </div> 

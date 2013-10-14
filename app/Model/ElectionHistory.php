@@ -17,7 +17,7 @@ class ElectionHistory extends AppModel {
 /**
  * Primary key field
 */
- 	public $primaryKey = 'VoterID';
+ 	public $primaryKey = 'ID';
 
 
 /**

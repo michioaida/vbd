@@ -107,7 +107,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => '',
-		'database' => '833731_mcmahon',
+		'database' => 'voterdb',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
