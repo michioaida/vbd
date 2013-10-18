@@ -263,9 +263,9 @@ class VotersController extends AppController {
     	if (!empty($voter['zip'])) {
     		$conditions['ResidentialAddress.Zip'] = $voter['zip'];
     	}
-    	//if (!empty($voter['district'])) {
-    	//	$conditions['Affiliation.District'] = $voter['district'];
-    	//}
+    	if (!empty($voter['district'])) {
+    		$conditions['Affiliation.District'] = $voter['district'];
+    	}
     	if (!empty($voter['countylegislativedistrict'])) {
     		$affiliationFlag = true;
     		$conditions['Affiliation.CountyLegislativeDistrict'] = $voter['countylegislativedistrict'];

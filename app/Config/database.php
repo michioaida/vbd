@@ -81,10 +81,10 @@ class DATABASE_CONFIG {
 	public $hanna = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => 'mysql51-088.wc1.ord1.stabletransit.com',
-		'login' => '833731_hanna',
-		'password' => 'R1Y68Nu46m',
-		'database' => '833731_hanna',
+		'host' => 'mysql51-024.wc1.ord1.stabletransit.com',
+		'login' => '833731_votdbadm',
+		'password' => 'qgBXg85GvO',
+		'database' => '833731_voterdb',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
@@ -92,10 +92,9 @@ class DATABASE_CONFIG {
 	public $mcmahon = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => '192.237.180.90',			// development
-		//'host' => '10.208.150.160',		// production
-		'login' => 'root',
-		'password' => 'a9yWtc6L',
+		'host' => '753e9f762e2c63885babc66d95212317a2b7823f.rackspaceclouddb.com',
+		'login' => 'MuziVoterDB89',
+		'password' => '4o5G6T8Yfav62Uu',
 		'database' => 'onondaga',
 		'prefix' => '',
 		//'encoding' => 'utf8',

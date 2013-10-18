@@ -24,7 +24,7 @@
 		//var_dump($county_legislative_district_array);
 		//die();
 
-	    //echo $this->Form->input("district", array('div' => array('id' => 'cityDiv'), 'label' => 'District'));
+	    echo $this->Form->input("district", array('div' => array('id' => 'cityDiv'), 'label' => 'District'));
 	    echo $this->Form->input("countylegislativedistrict", array('div' => array('id' => 'cityDiv'), 'label' => 'County Legislative District'));
 	    echo $this->Form->input("town", array('div' => array('id' => 'cityDiv'), 'label' => 'Town'));
 	    echo $this->Form->input("ward", array('div' => array('id' => 'cityDiv'), 'label' => 'Ward'));
