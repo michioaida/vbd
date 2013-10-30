@@ -199,7 +199,7 @@ class VotersController extends AppController {
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 
 		// The column headings of your .csv file
-		$header_row = array("VoterID", "FirstName", "LastName", "Street #", "Street Name", "City", "State", "Zip Code", "Phone", "Party", "\r\n");
+		$header_row = array("VoterID", "FirstName", "LastName", "Street #", "Street Name", "City", "State", "Zip Code", "Phone", "Party", "SourceID", "\r\n");
 		fputcsv($csv_file, $header_row);
 
 		// Each iteration of this while loop will be a row in your .csv file where each field corresponds to the heading of the column
@@ -223,6 +223,7 @@ class VotersController extends AppController {
 				$voter['ResidentialAddress']['Zip'],
 				$voter['Voter']['Phone'],
 				$voter['Affiliation']['Party'],
+				$voter['Voter']['SourceID'],
 //				$voter['MailingAddress']['Address1'] . ' ' . $voter['MailingAddress']['City'] . ' ' . $voter['MailingAddress']['State'] . ' ' . $voter['MailingAddress']['Zip'],
 				"\r\n"
 			);
